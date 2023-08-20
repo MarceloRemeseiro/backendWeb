@@ -1,0 +1,24 @@
+<%- include("partials/header") %>
+
+<main class="vh-100 container pt-2 text-center d-flex justify-content-center">
+  <div class="container mt-5">
+    <h1 class="display-1"><%= tituloPagina %></h1>
+    <div class="row">
+      <!-- Aquí es donde mostrarás las imágenes en un grid -->
+    </div>
+    <button id="open-btn" class="btn btn-primary mt-4">
+      Seleccionar imagen o video
+    </button>
+  </div>
+
+  <!-- cloudinary media library -->
+  <script>
+    const cloudName = "<%= cloudName %>";
+    const apiKey = "<%= apiKey %>";
+  </script>
+  <script src="https://media-library.cloudinary.com/global/all.js" type="text/javascript"></script>
+  <!-- local cloudinary instantiation -->
+</main>
+<%- include("partials/footer") %>
+
+

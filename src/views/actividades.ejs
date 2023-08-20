@@ -1,0 +1,343 @@
+<%- include("partials/header") %>
+
+<div class="vh-100 container pt-2 text-center d-flex justify-content-center">
+  <section class="contenedor">
+    <h1 class="display-1"><%= tituloPagina %></h1>
+
+    <form
+      class="d-flex justify-content-center gap-3 align-items-center mb-3"
+      method="post"
+      action="/actividades"
+    >
+      <div class="mb-3">
+        <label for="titulo" class="form-label">Titulo</label>
+        <input
+          type="text"
+          class="form-control"
+          name="titulo"
+          id="titulo"
+          aria-describedby="helpId"
+          placeholder="Título de la actividad"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="textoTarjeta" class="form-label">Texto tarjeta</label>
+        <input
+          type="text"
+          class="form-control"
+          name="textoTarjeta"
+          id="textoTarjeta"
+          aria-describedby="helpId"
+          placeholder="Subtítulo de la actividad"
+        />
+      </div>
+
+      <div style="margin-top: 20px">
+        <label for="Imagen" class="form-label">Imagen</label>
+        <input
+          type="text"
+          class="form-control imagen-input-create"
+          name="imagen"
+          id="imagen"
+          aria-describedby="helpId"
+          placeholder="Imagen de la actividad"
+          autocomplete="off"
+        />
+        <button
+          type="button"
+          class="btn btn-sm btn-secondary mt-1"
+          onclick="openImagePicker('modalCreate', 'imagen')"
+        >
+          Seleccionar imagen
+        </button>
+        <!-- MODAL CREATE AGREGAR IMAGENES-->
+
+        <div id="modalCreate" class="modal">
+          <div class="modal-dialog modal-xl text-dark modal-images">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2>Seleccionar imagen</h2>
+              </div>
+              <div class="modal-body">
+                <div class="container-fluid">
+                  <div
+                    class="row image-grid"
+                    style="overflow-y: auto; max-height: calc(100vh - 200px)"
+                  >
+                    <!-- Las imágenes se agregarán aquí -->
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  id="load-more-btn"
+                >
+                  Cargar mas..
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary cancelar-galeria-create"
+                  data-bs-dismiss="modal"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="texto" class="form-label">Texto</label>
+        <textarea
+          class="form-control"
+          name="texto"
+          id="texto"
+          aria-describedby="helpId"
+          placeholder="Texto de la actividad"
+        ></textarea>
+      </div>
+      <div class="mt-3 form-check flex-colum">
+        <div>
+          <input
+            type="checkbox"
+            class="form-check-input"
+            name="boton"
+            id="boton"
+          />
+          <label class="form-check-label" for="boton">Boton</label>
+        </div>
+        <div>
+          <input type="checkbox" class="form-check-input" name="web" id="web" />
+          <label class="form-check-label" for="boton">Web</label>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="orden" class="form-label">Orden</label>
+        <select class="form-select" name="orden" id="orden">
+          <% for (let i = 1; i <= actividades.length + 1; i++) { %>
+          <option value="<%= i %>"><%= i %></option>
+          <% } %>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="margin-top: 15px">
+        Crear
+      </button>
+    </form>
+    <!-- TARJETA DASHBOARD -->
+
+    <div class="row">
+      <% actividades.sort((a, b) => a.orden - b.orden).forEach(actividad => { %>
+      <div class="col-md-3">
+        <div class="card mb-4 position-relative">
+          <img
+            src="<%= actividad.imagen %>"
+            class="card-img-top"
+            alt="<%= actividad.titulo %>"
+          />
+          <div class="card-body text-dark">
+            <h5 class="card-title"><%= actividad.titulo %></h5>
+            <p class="card-text"><%= actividad.textoTarjeta %></p>
+            <p class="card-text truncate-text"><%= actividad.texto %></p>
+            <small
+              class="w-50 px-2 py-1 text-center text-white rounded <%= actividad.boton ? 'bg-success ' : 'bg-danger' %>"
+            >
+              <%= actividad.boton ? 'Botón activado' : 'Botón desactivado' %>
+            </small>
+            <div
+              class="position-absolute top-0 end-0 text-black bg-white p-1 text-center"
+              style="border-radius: 0 5px 0 0"
+            >
+              <small><%= actividad.orden %></small>
+            </div>
+            <small
+              class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= actividad.web ? 'bg-success ' : 'bg-danger' %>"
+            >
+              <%= actividad.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+            </small>
+          </div>
+          <div class="d-flex justify-content-center mt-auto p-3">
+            <a
+              href="/actividades/edit/<%= actividad.id %>"
+              class="btn btn-warning edit-button"
+              data-bs-toggle="modal"
+              data-bs-target="#modalEdit"
+              data-id="<%= actividad.id %>"
+              data-type="actividades"
+              >Editar</a
+            >
+            <a
+              href="/actividades/delete/<%= actividad.id %>"
+              class="btn btn-danger ms-2"
+              >Borrar</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <% }) %>
+    </div>
+  </section>
+</div>
+
+<!-- Modal Edit -->
+
+<div
+  class="modal fade"
+  id="modalEdit"
+  tabindex="-1"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  role="dialog"
+  aria-labelledby="modalTitleId"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+    role="document"
+  >
+    <div class="modal-content text-dark">
+      <div class="modal-header">
+        <h5 id="exampleModalLabel">Editar Serie</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm" method="post" action="/actividades/update">
+          <div class="mb-3">
+            <label for="editTitulo" class="form-label">Titulo</label>
+            <input
+              type="text"
+              class="form-control"
+              id="editTitulo"
+              name="editTitulo"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="editTextoTarjeta" class="form-label"
+              >Texto tarjeta</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="editTextoTarjeta"
+              name="editTextoTarjeta"
+            />
+          </div>
+          <div class="mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="editImagen"
+              name="editImagen"
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary mt-1"
+              onclick="openImagePicker('modalSelectImage', 'editImagen')"
+            >
+              Seleccionar imagen
+            </button>
+          </div>
+          <div class="mb-3">
+            <label for="texto" class="form-label">Texto</label>
+            <textarea
+              class="form-control"
+              id="editTexto"
+              name="editTexto"
+              aria-describedby="helpId"
+              placeholder="Texto de la actividad"
+            ></textarea>
+          </div>
+          <div class="mt-3 form-check flex-colum">
+            <div>
+              <input
+                type="checkbox"
+                class="form-check-input"
+                name="editBoton"
+                id="editBoton"
+              />
+              <label class="form-check-label" for="boton">Boton</label>
+            </div>
+            <div>
+              <input
+                type="checkbox"
+                class="form-check-input"
+                name="editWeb"
+                id="editWeb"
+              />
+              <label class="form-check-label" for="boton">Web</label>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="orden" class="form-label">Orden</label>
+            <select class="form-select" name="editOrden" id="editOrden">
+              <% for (let i = 1; i <= actividades.length; i++) { %>
+              <option value="<%= i %>"><%= i %></option>
+              <% } %>
+            </select>
+          </div>
+          <input type="hidden" id="actividadId" name="id" />
+        </form>
+        <!-- Modal para seleccionar imágenes -->
+        <div id="modalSelectImage" class="modal">
+          <div class="modal-dialog modal-xl text-dark modal-images">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h2>Seleccionar imagen</h2>
+              </div>
+              <div class="modal-body">
+                <div class="container-fluid">
+                  <div
+                    class="row image-grid"
+                    style="overflow-y: auto; max-height: calc(100vh - 200px)"
+                  >
+                    <!-- Las imágenes se agregarán aquí -->
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  id="load-more-btn"
+                >
+                  Cargar mas..
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary cancelar-galeria-create"
+                  data-bs-dismiss="modal"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary cancelar-galeria-edit"
+          data-bs-dismiss="modal"
+        >
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" id="saveChanges">
+          Guardar Cambios
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include("partials/footer") %>
