@@ -1,15 +1,129 @@
 <%- include("partials/header") %>
 
-  <!-- Main Content -->
-  <header
-    class="container vh-100 d-flex justify-content-center align-items-center"
-  >
-    <div class="d-flex flex-column justify-content-center align-items-center">
-      <img class="w-25 rounded" src="/img/foto.png" alt="logo" />
-      <h1 class="text-uppercase fw-bold">Iglesia Evangelica de Vilassar de Mar</h1>
+<!-- Main Content -->
+<header class="container vh-100">
+  <div class="d-flex flex-column align-items-center">
+    <h1 class="text-uppercase fw-bold">Resumen</h1>
+  </div>
+  <div class="d-flex flex-column">
+    <h2>Sliders</h2>
+    <div class="d-flex justify-content-center">
+      <div class="row">
+        <% sliders1.forEach(slider => { %>
+        <div class="col-5">
+          <div class="card">
+            <img
+              class="card-img-top"
+              src="<%= slider.imagen %>"
+              alt="<%= slider.titulo %>"
+            />
+            <div class="card-body text-black">
+              <p class="card-text"><%= slider.titulo %></p>
+              <p class="card-text"><%= slider.subtitulo %></p>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+
+      <div class="row">
+        <% sliders2.forEach(slider => { %>
+        <div class="col-5">
+          <div class="card">
+            <img
+              class="card-img-top"
+              src="<%= slider.imagen %>"
+              alt="<%= slider.titulo %>"
+            />
+          </div>
+        </div>
+        <% }) %>
+      </div>
     </div>
-  </header>
-  <%- include("partials/footer") %>
+    <hr />
+    <div class="row mt-3">
+      <h2>Tarjetas</h2>
 
+      <% tarjetas.forEach(tarjeta => { %>
+      <div class="col-3">
+        <div class="card">
+          <img
+            class="card-img-top"
+            src="<%= tarjeta.imagen %>"
+            alt="<%= tarjeta.titulo %>"
+          />
+          <div class="card-body text-black">
+            <p class="card-text"><%= tarjeta.titulo %></p>
+            <p class="card-text"><%= tarjeta.texto %></p>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+    <hr />
+    <div class="row mt-3">
+      <h2>Actividades</h2>
 
+      <% actividades.sort((a, b) => a.orden - b.orden).forEach(actividad => { %>
+      <div class="col-3">
+        <div class="card">
+          <img
+            class="card-img-top"
+            src="<%= actividad.imagen %>"
+            alt="<%= actividad.titulo %>"
+          />
+          <div class="card-body text-black">
+            <p class="card-text"><%= actividad.titulo %></p>
+            <p class="card-text"><%= actividad.textoTarjeta %></p>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+    <hr />
+    <div class="row mt-3">
+      <h2>Series de Youtube</h2>
 
+      <% series.sort((a, b) => a.orden - b.orden).forEach(serie => { %>
+      <div class="col-3">
+        <div class="card">
+          <img
+            class="card-img-top"
+            src="<%= serie.imagen %>"
+            alt="<%= serie.titulo %>"
+          />
+          <div class="card-body text-black">
+            <p class="card-text"><%= serie.titulo %></p>
+            <p class="card-text"><%= serie.subtitulo %></p>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+    <hr />
+    <div class="row mt-3">
+      <h2>Temps Junts</h2>
+
+      <% const tepmsJuntsOrder = tempsJunts.sort((a, b) => { const dateA = new
+        Date(a.fecha); const dateB = new Date(b.fecha); return dateB - dateA; });
+        tepmsJuntsOrder.forEach(temps => { %>
+      <div class="col-3">
+        <div class="card">
+          <img
+            class="card-img-top"
+            src="<%= temps.imagen %>"
+            alt="<%= temps.titulo %>"
+          />
+          <div class="card-body text-black">
+            <p class="card-text"><%= temps.titulo %></p>
+            <p class="card-text"><%= temps.subtitulo %></p>
+            <p class="card-text"><%= temps.texto %></p>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</header>
+
+<%- include("partials/footer") %>

@@ -15,36 +15,36 @@
       <hr />
       <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item">
-          <a href="/" class="nav-link active" aria-current="page">
-            🏚️ INICIO
-          </a>
+          <a href="/" class="nav-link text-white" aria-current="page"> 🏚️ INICIO </a>
         </li>
         <li>
-          <a href="slider1" class="nav-link text-white">
+          <a href="/slider1" class="nav-link text-white">
             🎞️ Slider Principal
           </a>
         </li>
         <li>
-          <a href="slider2" class="nav-link text-white">
+          <a href="/slider2" class="nav-link text-white">
             🎞️ Slider Secundario
           </a>
         </li>
         <li>
-          <a href="tarjetas" class="nav-link text-white"> 📇 Tarjetas </a>
+          <a href="/tarjetas" class="nav-link text-white"> 📇 Tarjetas </a>
         </li>
         <li>
-          <a href="actividades" class="nav-link text-white"> 🗓️ Actividades </a>
+          <a href="/actividades" class="nav-link text-white">
+            🗓️ Actividades
+          </a>
         </li>
         <li>
-          <a href="series" class="nav-link text-white"> 🎬 Series Youtube </a>
+          <a href="/series" class="nav-link text-white"> 🎬 Series Youtube </a>
         </li>
         <li>
-          <a href="tempsJunts" class="nav-link text-white"> 👨‍👩‍👧‍👦 Temps Junts </a>
+          <a href="/tempsJunts" class="nav-link text-white"> 👨‍👩‍👧‍👦 Temps Junts </a>
         </li>
         <hr />
 
         <li>
-          <a href="imagenes" class="nav-link text-white"> 📷 Imagenes</a>
+          <a href="/imagenes" class="nav-link text-white"> 📷 Imagenes</a>
         </li>
       </ul>
       <hr />
@@ -63,20 +63,30 @@
             height="32"
             class="rounded-circle me-2"
           />
-          <strong>Usuario</strong>
+          <strong>Salir</strong>
         </a>
         <ul
           class="dropdown-menu dropdown-menu-dark text-small shadow"
           aria-labelledby="dropdownUser1"
         >
-          <!-- <li><a class="dropdown-item" href="#">New project...</a></li>
-              <li><a class="dropdown-item" href="#">Settings</a></li>
-              <li><a class="dropdown-item" href="#">Profile</a></li>
-              <li><hr class="dropdown-divider" /></li> -->
-          <li><a class="dropdown-item" href="#">Sign out</a></li>
+          <li><a class="dropdown-item" href="/logout">Logout</a></li>
         </ul>
       </div>
     </div>
   </nav>
   <div style="width: 280px"></div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var navItems = document.querySelectorAll("nav ul li a");
+      var currentPath = window.location.pathname;
+
+      navItems.forEach(function (navItem) {
+        if (navItem.getAttribute("href") === currentPath) {
+          navItem.classList.add("active");
+        } else {
+          navItem.classList.remove("active");
+        }
+      });
+    });
+  </script>
 </body>

@@ -5,7 +5,7 @@ const cloudinary = require("../utils/cloudinaryConecction");
 
 router.get("/tempsJunts", async (req, res) => {
   try {
-    const [tempsJunts] = await pool.query('SELECT * FROM tempsJunts');
+    const [tempsJunts] = await pool.query('SELECT * FROM tempsjunts');
     res.render("tempsJunts", {
       tempsJunts: tempsJunts,
       titulo: "Temps Junts",
@@ -21,7 +21,7 @@ router.post("/tempsJunts", async (req, res) => {
   try {
     const { titulo, subtitulo, fecha, imagen, link, texto, web } = req.body;
     await pool.query(
-      'INSERT INTO tempsJunts (titulo, subtitulo, fecha, imagen, link, web, texto) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO tempsjunts (titulo, subtitulo, fecha, imagen, link, web, texto) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [titulo, subtitulo, new Date(fecha), imagen, link, web === "on" ? true : false, texto]
     );
     res.redirect("/tempsJunts");
@@ -34,7 +34,7 @@ router.post("/tempsJunts", async (req, res) => {
 router.delete("/tempsJunts/delete/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    await pool.query('DELETE FROM tempsJunts WHERE id = ?', [id]);
+    await pool.query('DELETE FROM tempsjunts WHERE id = ?', [id]);
     res.redirect("/tempsJunts");
   } catch (error) {
     console.error(error);
@@ -44,7 +44,7 @@ router.delete("/tempsJunts/delete/:id", async (req, res) => {
 
 router.get("/tempsJunts/edit/:id", async (req, res) => {
   try {
-    const [tempsjunts] = await pool.query('SELECT * FROM tempsJunts WHERE id = ?', [parseInt(req.params.id)]);
+    const [tempsjunts] = await pool.query('SELECT * FROM tempsjunts WHERE id = ?', [parseInt(req.params.id)]);
     res.json(tempsjunts);
   } catch (error) {
     console.error(error);
@@ -56,7 +56,7 @@ router.put("/tempsJunts/update/:id", async (req, res) => {
   try {
     const { titulo, subtitulo, fecha, imagen, link, texto, web } = req.body;
     await pool.query(
-      'UPDATE tempsJunts SET titulo = ?, subtitulo = ?, fecha = ?, imagen = ?, link = ?, web = ?, texto = ? WHERE id = ?',
+      'UPDATE tempsjunts SET titulo = ?, subtitulo = ?, fecha = ?, imagen = ?, link = ?, web = ?, texto = ? WHERE id = ?',
       [titulo, subtitulo, new Date(fecha), imagen, link, web, texto, parseInt(req.params.id)]
     );
     res.redirect("/tempsJunts");
