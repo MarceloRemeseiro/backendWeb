@@ -1,53 +1,40 @@
 const express = require("express");
 const router = express.Router();
-const { prisma } = require("../../prisma/prisma"); // Importar prisma
+const pool = require("../db/db"); // Importar la conexión a la base de datos
 const cloudinary = require("../utils/cloudinaryConecction");
 
 router.get("/tempsJunts", async (req, res) => {
   try {
-    const tempsJunts = await prisma.tempsJunts.findMany(); // Utilizar prisma para recuperar todas las tempsJunts
+    const [tempsJunts] = await pool.query('SELECT * FROM tempsJunts');
     res.render("tempsJunts", {
       tempsJunts: tempsJunts,
       titulo: "Temps Junts",
       tituloPagina: "Temps Junts",
-    }); // Renderizar tempsJunts.ejs y pasar las tempsJunts a la plantilla
+    });
   } catch (error) {
-    console.error(error); // Registrar el error en la consola
-    res.status(500).send("Error al recuperar tempsJunts"); // Enviar un mensaje de error como respuesta
+    console.error(error);
+    res.status(500).send("Error al recuperar tempsJunts");
   }
 });
 
 router.post("/tempsJunts", async (req, res) => {
   try {
-    const { titulo, subtitulo, fecha, imagen, link, texto, orden, web } =
-      req.body;
-    const nuevaTempsjunts = await prisma.tempsJunts.create({
-      data: {
-        titulo,
-        subtitulo,
-        fecha: new Date(fecha),
-        imagen,
-        link,
-        web: web === "on" ? true : false,
-        texto,
-      },
-    });
-
-    res.redirect("/tempsJunts"); // Redirigir al cliente de nuevo a la página de tempsJunts
+    const { titulo, subtitulo, fecha, imagen, link, texto, web } = req.body;
+    await pool.query(
+      'INSERT INTO tempsJunts (titulo, subtitulo, fecha, imagen, link, web, texto) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [titulo, subtitulo, new Date(fecha), imagen, link, web === "on" ? true : false, texto]
+    );
+    res.redirect("/tempsJunts");
   } catch (error) {
-    console.error(error); // Registrar el error en la consola
-    res.status(500).send("Error al crear tempsJunts"); // Enviar un mensaje de error como respuesta
+    console.error(error);
+    res.status(500).send("Error al crear tempsJunts");
   }
 });
 
 router.delete("/tempsJunts/delete/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    await prisma.tempsJunts.delete({
-      where: {
-        id: id,
-      },
-    });
+    await pool.query('DELETE FROM tempsJunts WHERE id = ?', [id]);
     res.redirect("/tempsJunts");
   } catch (error) {
     console.error(error);
@@ -56,42 +43,38 @@ router.delete("/tempsJunts/delete/:id", async (req, res) => {
 });
 
 router.get("/tempsJunts/edit/:id", async (req, res) => {
-  const serie = await prisma.tempsJunts.findUnique({
-    where: {
-      id: parseInt(req.params.id),
-    },
-  });
-  res.json(serie);
+  try {
+    const [tempsjunts] = await pool.query('SELECT * FROM tempsJunts WHERE id = ?', [parseInt(req.params.id)]);
+    res.json(tempsjunts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error al editar tempsJunts");
+  }
 });
 
 router.put("/tempsJunts/update/:id", async (req, res) => {
-  const { titulo, subtitulo, fecha, imagen, link, texto, web } = req.body;
-  const updatedtempsJunts = await prisma.tempsJunts.update({
-    where: {
-      id: parseInt(req.params.id),
-    },
-    data: {
-      titulo,
-      subtitulo,
-      fecha: new Date(fecha),
-      imagen,
-      link,
-      web,
-      texto,
-    },
-  });
-  res.redirect("/tempsJunts");
+  try {
+    const { titulo, subtitulo, fecha, imagen, link, texto, web } = req.body;
+    await pool.query(
+      'UPDATE tempsJunts SET titulo = ?, subtitulo = ?, fecha = ?, imagen = ?, link = ?, web = ?, texto = ? WHERE id = ?',
+      [titulo, subtitulo, new Date(fecha), imagen, link, web, texto, parseInt(req.params.id)]
+    );
+    res.redirect("/tempsJunts");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error al actualizar tempsJunts");
+  }
 });
 
 router.get("/api/images", async (req, res) => {
   try {
-    const cursor = req.query.cursor; // Obtener el cursor de la URL de la solicitud
+    const cursor = req.query.cursor;
     const search = cloudinary.search
       .sort_by("public_id", "desc")
       .max_results(30);
 
     if (cursor) {
-      search.next_cursor(cursor); // Si hay un cursor, úsalo en la búsqueda
+      search.next_cursor(cursor);
     }
 
     const result = await search.execute();
@@ -99,11 +82,11 @@ router.get("/api/images", async (req, res) => {
 
     res.json({
       images: images,
-      nextCursor: result.next_cursor, // Devuelve el siguiente cursor en la respuesta JSON
+      nextCursor: result.next_cursor,
     });
   } catch (error) {
     res.status(500).send("Error al obtener las imágenes");
   }
 });
 
-module.exports = router; // Exportar el router
+module.exports = router;

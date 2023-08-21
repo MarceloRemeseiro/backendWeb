@@ -162,6 +162,7 @@
           <div class="d-flex justify-content-center mt-auto p-3">
             <a
               href="/actividades/edit/<%= actividad.id %>"
+              
               class="btn btn-warning edit-button"
               data-bs-toggle="modal"
               data-bs-target="#modalEdit"
@@ -286,6 +287,7 @@
             </select>
           </div>
           <input type="hidden" id="actividadId" name="id" />
+
         </form>
         <!-- Modal para seleccionar imágenes -->
         <div id="modalSelectImage" class="modal">
@@ -341,3 +343,4 @@
 </div>
 
 <%- include("partials/footer") %>
+

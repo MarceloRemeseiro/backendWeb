@@ -22,12 +22,11 @@ editButtons.forEach((button) => {
     type = e.target.dataset.type; // Asigna el valor del atributo de datos al tipo de variable
     const url = e.target.href;
     const response = await fetch(url);
-    const data = await response.json();
+    const [data] = await response.json(); // <-- Añade la desestructuración del array aquí
     idInput.value = data.id;
     imagenInput.value = data.imagen;
-    webInput.checked = data.web === true ? true : false;
-
-    
+    webInput.checked = data.web;
+    console.log(idInput.value); // este llega undefined
 
     switch (type) {
       case "series":
@@ -40,7 +39,7 @@ editButtons.forEach((button) => {
         tituloInput.value = data.titulo;
         textoTarjetaInput.value = data.textoTarjeta;
         textoInput.value = data.texto;
-        botonInput.checked = data.boton === true ? true : false;
+        botonInput.checked = data.boton ;
         ordenSelect.value = data.orden;
         break;
       case "slider1":

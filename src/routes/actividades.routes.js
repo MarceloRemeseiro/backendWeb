@@ -1,52 +1,40 @@
 const express = require("express");
 const router = express.Router();
-const { prisma } = require("../../prisma/prisma"); // Importar prisma
 const cloudinary = require("../utils/cloudinaryConecction");
+const pool = require("../db/db");
 
 router.get("/actividades", async (req, res) => {
   try {
-    const actividades = await prisma.actividades.findMany(); // Utilizar prisma para recuperar todas las actividades
+    const [actividades] = await pool.query('SELECT * FROM actividades');
     res.render("actividades", {
       actividades: actividades,
       titulo: "Actividades",
       tituloPagina: "Actividades de la Iglesia",
-    }); // Renderizar actividades.ejs y pasar las actividades a la plantilla
+    });
   } catch (error) {
-    console.error(error); // Registrar el error en la consola
-    res.status(500).send("Error al recuperar las Actividades"); // Enviar un mensaje de error como respuesta
+    console.error(error);
+    res.status(500).send("Error al recuperar las Actividades");
   }
 });
 
 router.post("/actividades", async (req, res) => {
   try {
     const { titulo, textoTarjeta, imagen, boton, texto, orden, web } = req.body;
-    const nuevaActividad = await prisma.actividades.create({
-      data: {
-        titulo,
-        textoTarjeta,
-        imagen,
-        boton: boton === "on" ? true : false,
-        web: web === "on" ? true : false,
-        texto,
-        orden: parseInt(orden),
-      },
-    });
-
-    res.redirect("/actividades"); // Redirigir al cliente de nuevo a la página de actividades
+    await pool.query(
+      'INSERT INTO actividades (titulo, textoTarjeta, imagen, boton, texto, orden, web) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [titulo, textoTarjeta, imagen, boton === "on" ? true : false, texto, parseInt(orden), web === "on" ? true : false]
+    );
+    res.redirect("/actividades");
   } catch (error) {
-    console.error(error); // Registrar el error en la consola
-    res.status(500).send("Error al crear la Actividad"); // Enviar un mensaje de error como respuesta
+    console.error(error);
+    res.status(500).send("Error al crear la Actividad");
   }
 });
 
 router.delete("/actividades/delete/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    await prisma.actividades.delete({
-      where: {
-        id: id,
-      },
-    });
+    await pool.query('DELETE FROM actividades WHERE id = ?', [id]);
     res.redirect("/actividades");
   } catch (error) {
     console.error(error);
@@ -55,32 +43,29 @@ router.delete("/actividades/delete/:id", async (req, res) => {
 });
 
 router.get("/actividades/edit/:id", async (req, res) => {
-  const serie = await prisma.actividades.findUnique({
-    where: {
-      id: parseInt(req.params.id),
-    },
-  });
-  res.json(serie);
+  try {
+    const [actividad] = await pool.query('SELECT * FROM actividades WHERE id = ?', [parseInt(req.params.id)]);
+    res.json(actividad);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error al editar la Actividad");
+  }
 });
 
 router.put("/actividades/update/:id", async (req, res) => {
-  const { titulo, textoTarjeta, imagen, boton, texto, orden, web } = req.body;
-  const updatedActividades = await prisma.actividades.update({
-    where: {
-      id: parseInt(req.params.id),
-    },
-    data: {
-      titulo,
-      textoTarjeta,
-      imagen,
-      boton,
-      web,
-      texto,
-      orden: parseInt(orden),
-    },
-  });
-  res.redirect("/actividades");
+  try {
+    const { titulo, textoTarjeta, imagen, boton, texto, orden, web } = req.body;
+    await pool.query(
+      'UPDATE actividades SET titulo = ?, textoTarjeta = ?, imagen = ?, boton = ?, texto = ?, orden = ?, web = ? WHERE id = ?',
+      [titulo, textoTarjeta, imagen, boton, texto, [parseInt(orden)], web, [parseInt(req.params.id)]]
+    );
+    res.redirect("/actividades");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error al actualizar la Actividad");
+  }
 });
+
 
 router.get("/api/images", async (req, res) => {
   try {

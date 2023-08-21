@@ -134,14 +134,16 @@
     <!-- TARJETA DASHBOARD -->
 
     <div class="row">
-      <% tempsJunts.forEach(temps => { %>
+      <% const tepmsJuntsOrder = tempsJunts.sort((a, b) => { const dateA = new
+      Date(a.fecha); const dateB = new Date(b.fecha); return dateB - dateA; });
+      tepmsJuntsOrder.forEach(temps => { %>
       <div class="col-md-3">
         <div class="card mb-4 position-relative">
           <img
             src="<%= temps.imagen %>"
             class="card-img-top"
             alt="<%= temps.titulo %>"
-          />
+          />/* */
           <div class="card-body text-dark">
             <h5 class="card-title"><%= temps.titulo %></h5>
             <p class="card-text"><%= temps.subtitulo %></p>
