@@ -15,7 +15,7 @@ require('dotenv').config();
 
 
 app.use(express.json());
-app.set("port", process.env.PORT || 4000);
+app.set("port", 4000);
 app.set("views", __dirname + "/src/views");
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "/src/public")));
