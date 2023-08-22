@@ -8,7 +8,7 @@ router.get("/", async (req, res) => {
     const [sliders2] = await pool.query("SELECT * FROM slider2");
     const [actividades] = await pool.query("SELECT * FROM actividades");
     const [tarjetas] = await pool.query("SELECT * FROM tarjetas");
-    const [tempsJunts] = await pool.query("SELECT * FROM tempsJunts");
+    const [tempsJunts] = await pool.query("SELECT * FROM tempsjunts");
     const [series] = await pool.query("SELECT * FROM series");
 
     res.render("index", {

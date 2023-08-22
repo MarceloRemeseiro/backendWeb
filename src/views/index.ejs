@@ -6,11 +6,11 @@
     <h1 class="text-uppercase fw-bold">Resumen</h1>
   </div>
   <div class="d-flex flex-column">
-    <h2>Sliders</h2>
+    <h2>Slider Principal</h2>
     <div class="d-flex justify-content-center">
       <div class="row">
         <% sliders1.forEach(slider => { %>
-        <div class="col-5">
+        <div class="col-4">
           <div class="card">
             <a href="/slider1">
               <img
@@ -22,27 +22,40 @@
             <div class="card-body text-black">
               <p class="card-text"><%= slider.titulo %></p>
               <p class="card-text"><%= slider.subtitulo %></p>
+              <small
+                class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= slider.web ? 'bg-success ' : 'bg-danger' %>"
+              >
+                <%= slider.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+              </small>
             </div>
           </div>
         </div>
         <% }) %>
       </div>
+    </div>
+    <hr />
 
-      <div class="row">
-        <% sliders2.forEach(slider => { %>
-        <div class="col-5">
-          <div class="card">
-            <a href="/slider2">
-              <img
-                class="card-img-top"
-                src="<%= slider.imagen %>"
-                alt="<%= slider.titulo %>"
-              />
-            </a>
-          </div>
+    <div class="row">
+      <h2>Slider Secundario</h2>
+
+      <% sliders2.forEach(slider => { %>
+      <div class="col-4">
+        <div class="card">
+          <a href="/slider2">
+            <img
+              class="card-img-top"
+              src="<%= slider.imagen %>"
+              alt="<%= slider.titulo %>"
+            />
+          </a>
+          <small
+          class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= slider.web ? 'bg-success ' : 'bg-danger' %>"
+        >
+          <%= slider.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+        </small>
         </div>
-        <% }) %>
       </div>
+      <% }) %>
     </div>
     <hr />
     <div class="row mt-3">
@@ -61,6 +74,11 @@
           <div class="card-body text-black">
             <p class="card-text"><%= tarjeta.titulo %></p>
             <p class="card-text"><%= tarjeta.texto %></p>
+            <small
+              class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= tarjeta.web ? 'bg-success ' : 'bg-danger' %>"
+            >
+              <%= tarjeta.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+            </small>
           </div>
         </div>
       </div>
@@ -83,6 +101,11 @@
           <div class="card-body text-black">
             <p class="card-text"><%= actividad.titulo %></p>
             <p class="card-text"><%= actividad.textoTarjeta %></p>
+            <small
+            class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= actividad.web ? 'bg-success ' : 'bg-danger' %>"
+          >
+            <%= actividad.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+          </small>
           </div>
         </div>
       </div>
@@ -105,6 +128,11 @@
           <div class="card-body text-black">
             <p class="card-text"><%= serie.titulo %></p>
             <p class="card-text"><%= serie.subtitulo %></p>
+            <small
+            class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= serie.web ? 'bg-success ' : 'bg-danger' %>"
+          >
+            <%= serie.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+          </small>
           </div>
         </div>
       </div>
@@ -130,6 +158,11 @@
             <p class="card-text"><%= temps.titulo %></p>
             <p class="card-text"><%= temps.subtitulo %></p>
             <p class="card-text"><%= temps.texto %></p>
+            <small
+            class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= temps.web ? 'bg-success ' : 'bg-danger' %>"
+          >
+            <%= temps.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+          </small>
           </div>
         </div>
       </div>
