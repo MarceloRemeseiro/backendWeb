@@ -1,18 +1,20 @@
 
-const users = [
-  {
-    username: "mediavdm@gmail.com",
-    password: "Salmo150",
-  },
-  // ...other users
-];
-async function checkCredentials(username, password) {
-  const user = users.find(user => user.username === username);
-  if (!user) return false;
-  return password === user.password;
-}
-
-
-module.exports = {
-  checkCredentials,
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: process.env.SECRET,
+  baseURL: process.env.BASE_URL,
+  clientID: process.env.CLIENT_ID,
+  issuerBaseURL: process.env.ISSUER
 };
+
+/* const config = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: process.env.SECRET,
+  baseURL: 'http://localhost:3000',
+  clientID: process.env.CLIENT_ID,
+  issuerBaseURL: process.env.ISSUER
+}; */
+
+module.exports=config;

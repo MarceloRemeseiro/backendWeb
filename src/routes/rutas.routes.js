@@ -3,6 +3,10 @@ const router = express.Router();
 const pool = require("../db/db");
 
 router.get("/", async (req, res) => {
+  if (!req.oidc.isAuthenticated()) {
+    return res.redirect("/login");
+  }
+  // Añade el middleware aquí
   try {
     const [sliders1] = await pool.query("SELECT * FROM slider1");
     const [sliders2] = await pool.query("SELECT * FROM slider2");
@@ -27,6 +31,10 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/imagenes", (req, res) => {
+  if (!req.oidc.isAuthenticated()) {
+    return res.redirect("/login");
+  }
+  // Añade el middleware aquí también si quieres que esta ruta también esté protegida
   res.render("imagenes", {
     tituloPagina: "Imágenes",
     titulo: "Imágenes",

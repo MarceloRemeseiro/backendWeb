@@ -4,6 +4,9 @@ const cloudinary = require("../utils/cloudinaryConecction");
 const pool = require("../db/db");
 
 router.get("/actividades", async (req, res) => {
+  if (!req.oidc.isAuthenticated()) {
+    return res.redirect("/login");
+  }
   try {
     const [actividades] = await pool.query('SELECT * FROM actividades');
     res.render("actividades", {

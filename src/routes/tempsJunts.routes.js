@@ -4,6 +4,9 @@ const pool = require("../db/db"); // Importar la conexión a la base de datos
 const cloudinary = require("../utils/cloudinaryConecction");
 
 router.get("/tempsJunts", async (req, res) => {
+  if (!req.oidc.isAuthenticated()) {
+    return res.redirect("/login");
+  }
   try {
     const [tempsJunts] = await pool.query('SELECT * FROM tempsjunts');
     res.render("tempsJunts", {
