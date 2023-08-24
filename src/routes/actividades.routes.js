@@ -4,11 +4,8 @@ const cloudinary = require("../utils/cloudinaryConecction");
 const pool = require("../db/db");
 
 router.get("/actividades", async (req, res) => {
-  if (!req.oidc.isAuthenticated()) {
-    return res.redirect("/login");
-  }
   try {
-    const [actividades] = await pool.query('SELECT * FROM actividades');
+    const [actividades] = await pool.query("SELECT * FROM actividades");
     res.render("actividades", {
       actividades: actividades,
       titulo: "Actividades",
@@ -24,8 +21,16 @@ router.post("/actividades", async (req, res) => {
   try {
     const { titulo, textoTarjeta, imagen, boton, texto, orden, web } = req.body;
     await pool.query(
-      'INSERT INTO actividades (titulo, textoTarjeta, imagen, boton, texto, orden, web) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [titulo, textoTarjeta, imagen, boton === "on" ? true : false, texto, parseInt(orden), web === "on" ? true : false]
+      "INSERT INTO actividades (titulo, textoTarjeta, imagen, boton, texto, orden, web) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [
+        titulo,
+        textoTarjeta,
+        imagen,
+        boton === "on" ? true : false,
+        texto,
+        parseInt(orden),
+        web === "on" ? true : false,
+      ]
     );
     res.redirect("/actividades");
   } catch (error) {
@@ -37,7 +42,7 @@ router.post("/actividades", async (req, res) => {
 router.delete("/actividades/delete/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    await pool.query('DELETE FROM actividades WHERE id = ?', [id]);
+    await pool.query("DELETE FROM actividades WHERE id = ?", [id]);
     res.redirect("/actividades");
   } catch (error) {
     console.error(error);
@@ -47,7 +52,10 @@ router.delete("/actividades/delete/:id", async (req, res) => {
 
 router.get("/actividades/edit/:id", async (req, res) => {
   try {
-    const [actividad] = await pool.query('SELECT * FROM actividades WHERE id = ?', [parseInt(req.params.id)]);
+    const [actividad] = await pool.query(
+      "SELECT * FROM actividades WHERE id = ?",
+      [parseInt(req.params.id)]
+    );
     res.json(actividad);
   } catch (error) {
     console.error(error);
@@ -59,8 +67,17 @@ router.put("/actividades/update/:id", async (req, res) => {
   try {
     const { titulo, textoTarjeta, imagen, boton, texto, orden, web } = req.body;
     await pool.query(
-      'UPDATE actividades SET titulo = ?, textoTarjeta = ?, imagen = ?, boton = ?, texto = ?, orden = ?, web = ? WHERE id = ?',
-      [titulo, textoTarjeta, imagen, boton, texto, [parseInt(orden)], web, [parseInt(req.params.id)]]
+      "UPDATE actividades SET titulo = ?, textoTarjeta = ?, imagen = ?, boton = ?, texto = ?, orden = ?, web = ? WHERE id = ?",
+      [
+        titulo,
+        textoTarjeta,
+        imagen,
+        boton,
+        texto,
+        [parseInt(orden)],
+        web,
+        [parseInt(req.params.id)],
+      ]
     );
     res.redirect("/actividades");
   } catch (error) {
@@ -68,7 +85,6 @@ router.put("/actividades/update/:id", async (req, res) => {
     res.status(500).send("Error al actualizar la Actividad");
   }
 });
-
 
 router.get("/api/images", async (req, res) => {
   try {
@@ -92,6 +108,5 @@ router.get("/api/images", async (req, res) => {
     res.status(500).send("Error al obtener las imágenes");
   }
 });
-
 
 module.exports = router; // Exportar el router

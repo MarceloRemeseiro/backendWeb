@@ -43,24 +43,27 @@
         />
       </div>
 
-      <div style="margin-top: 20px">
-        <label for="Imagen" class="form-label">Imagen</label>
+      <div class="mb-3 d-flex flex-column">
+        <label for="imagen" class="form-label imagen-input-create"
+          >Imagen</label
+        >
+
+        <button
+          type="button"
+          class="btn btn-xl btn-primary"
+          onclick="openImagePicker('modalCreate', 'imagen', 'imagePreviewContainerCreate')"
+        >
+          ➕
+        </button>
+
         <input
           type="text"
-          class="form-control imagen-input-create"
+          class="form-control"
           name="imagen"
           id="imagen"
           aria-describedby="helpId"
-          placeholder="Imagen de la excursión"
-          autocomplete="off"
+          hidden
         />
-        <button
-          type="button"
-          class="btn btn-sm btn-secondary mt-1"
-          onclick="openImagePicker('modalCreate', 'imagen')"
-        >
-          Seleccionar imagen
-        </button>
         <!-- MODAL CREATE AGREGAR IMAGENES-->
 
         <div id="modalCreate" class="modal">
@@ -98,6 +101,9 @@
             </div>
           </div>
         </div>
+      </div>
+      <div id="imagePreviewContainerCreate">
+        <!-- Aquí se mostrará la vista previa de la imagen -->
       </div>
 
       <div class="mb-3">
@@ -243,21 +249,28 @@
               placeholder="Fecha"
             />
           </div>
-          <div class="mb-3">
+          <div class="mb-3 d-flex gap-2">
+            <label for="imagen" class="form-label imagen-input-create"
+              >Imagen</label
+            >
+
+            <button
+              type="button"
+              class="btn btn-xl btn-primary"
+              onclick="openImagePicker('modalSelectImage', 'editImagen', 'imagePreviewContainerEdit')"
+            >
+              ➕
+            </button>
+            <div id="imagePreviewContainerEdit">
+              <!-- Aquí se mostrará la vista previa de la imagen -->
+            </div>
             <input
               type="text"
               class="form-control"
-              id="editImagen"
               name="editImagen"
-              autocomplete="off"
+              id="editImagen"
+              hidden
             />
-            <button
-              type="button"
-              class="btn btn-sm btn-secondary mt-1"
-              onclick="openImagePicker('modalSelectImage', 'editImagen')"
-            >
-              Seleccionar imagen
-            </button>
           </div>
           <div class="mb-3">
             <label for="texto" class="form-label">Texto</label>

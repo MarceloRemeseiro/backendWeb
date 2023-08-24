@@ -19,6 +19,7 @@ let type;
 editButtons.forEach((button) => {
   button.addEventListener("click", async function (e) {
     e.preventDefault();
+
     type = e.target.dataset.type; // Asigna el valor del atributo de datos al tipo de variable
     const url = e.target.href;
     const response = await fetch(url);
@@ -26,7 +27,14 @@ editButtons.forEach((button) => {
     idInput.value = data.id;
     imagenInput.value = data.imagen;
     webInput.checked = data.web;
-    console.log(idInput.value); // este llega undefined
+
+    const imagePreviewContainer = modal.querySelector("#imagePreviewContainerEdit");
+    const previewImage = document.createElement("img");
+    previewImage.src = data.imagen; // URL de la imagen que ya está guardada
+    previewImage.alt = "Vista previa";
+    previewImage.style.maxWidth = "100px"; // Ajusta según necesites
+    imagePreviewContainer.innerHTML = ""; // Limpiar el contenedor
+    imagePreviewContainer.appendChild(previewImage); // Agregar la vista previa
 
     switch (type) {
       case "series":
@@ -39,7 +47,7 @@ editButtons.forEach((button) => {
         tituloInput.value = data.titulo;
         textoTarjetaInput.value = data.textoTarjeta;
         textoInput.value = data.texto;
-        botonInput.checked = data.boton ;
+        botonInput.checked = data.boton;
         ordenSelect.value = data.orden;
         break;
       case "slider1":

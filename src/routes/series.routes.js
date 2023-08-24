@@ -4,11 +4,8 @@ const pool = require("../db/db"); // Importar la conexión a la base de datos
 const cloudinary = require("../utils/cloudinaryConecction");
 
 router.get("/series", async (req, res) => {
-  if (!req.oidc.isAuthenticated()) {
-    return res.redirect("/login");
-  }
   try {
-    const [series] = await pool.query('SELECT * FROM series');
+    const [series] = await pool.query("SELECT * FROM series");
     res.render("series", {
       series: series,
       titulo: "Series",
@@ -24,8 +21,15 @@ router.post("/series", async (req, res) => {
   try {
     const { titulo, subtitulo, imagen, link, web, orden } = req.body;
     await pool.query(
-      'INSERT INTO series (titulo, subtitulo, imagen, link, web, orden) VALUES (?, ?, ?, ?, ?, ?)',
-      [titulo, subtitulo, imagen, link, web === "on" ? true : false, parseInt(orden)]
+      "INSERT INTO series (titulo, subtitulo, imagen, link, web, orden) VALUES (?, ?, ?, ?, ?, ?)",
+      [
+        titulo,
+        subtitulo,
+        imagen,
+        link,
+        web === "on" ? true : false,
+        parseInt(orden),
+      ]
     );
     res.redirect("/series");
   } catch (error) {
@@ -37,7 +41,7 @@ router.post("/series", async (req, res) => {
 router.delete("/series/delete/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    await pool.query('DELETE FROM series WHERE id = ?', [id]);
+    await pool.query("DELETE FROM series WHERE id = ?", [id]);
     res.redirect("/series");
   } catch (error) {
     console.error(error);
@@ -47,7 +51,9 @@ router.delete("/series/delete/:id", async (req, res) => {
 
 router.get("/series/edit/:id", async (req, res) => {
   try {
-    const [serie] = await pool.query('SELECT * FROM series WHERE id = ?', [parseInt(req.params.id)]);
+    const [serie] = await pool.query("SELECT * FROM series WHERE id = ?", [
+      parseInt(req.params.id),
+    ]);
     res.json(serie);
   } catch (error) {
     console.error(error);
@@ -59,8 +65,16 @@ router.put("/series/update/:id", async (req, res) => {
   try {
     const { titulo, subtitulo, imagen, link, web, orden } = req.body;
     await pool.query(
-      'UPDATE series SET titulo = ?, subtitulo = ?, imagen = ?, link = ?, web = ?, orden = ? WHERE id = ?',
-      [titulo, subtitulo, imagen, link, web, parseInt(orden), parseInt(req.params.id)]
+      "UPDATE series SET titulo = ?, subtitulo = ?, imagen = ?, link = ?, web = ?, orden = ? WHERE id = ?",
+      [
+        titulo,
+        subtitulo,
+        imagen,
+        link,
+        web,
+        parseInt(orden),
+        parseInt(req.params.id),
+      ]
     );
     res.redirect("/series");
   } catch (error) {
@@ -91,6 +105,5 @@ router.get("/api/images", async (req, res) => {
     res.status(500).send("Error al obtener las imágenes");
   }
 });
-
 
 module.exports = router;
