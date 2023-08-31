@@ -74,7 +74,7 @@
           </a>
           <div class="card-body text-black">
             <p class="card-text"><%= tarjeta.titulo %></p>
-            <p class="card-text"><%= tarjeta.texto %></p>
+            <p class="card-text"><%- tarjeta.texto %></p>
             <small
               class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= tarjeta.web ? 'bg-success ' : 'bg-danger' %>"
             >
@@ -158,7 +158,7 @@
           <div class="card-body text-black">
             <p class="card-text"><%= temps.titulo %></p>
             <p class="card-text"><%= temps.subtitulo %></p>
-            <p class="card-text"><%= temps.texto %></p>
+            <p class="card-text"><%- temps.texto %></p>
             <small
             class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= temps.web ? 'bg-success ' : 'bg-danger' %>"
           >

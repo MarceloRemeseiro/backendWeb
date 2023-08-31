@@ -15,7 +15,7 @@ const { config, ensureAuthenticated } = require("./src/utils/auth");
 const { auth } = require("express-openid-connect");
 
 //Settings
-app.set("port", 3000);
+app.set("port", 4000);
 app.set("views", __dirname + "/src/views");
 app.set("view engine", "ejs");
 

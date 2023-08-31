@@ -95,14 +95,25 @@
         <!-- Aquí se mostrará la vista previa de la imagen -->
       </div>
 
-      <div class="mb-3">
+      <div class="mb-3 d-flex flex-column">
         <label for="texto" class="form-label">Texto</label>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#quillModal"
+        >
+          ➕
+        </button>
+
+        <!-- Textarea oculto para guardar el contenido de Quill -->
         <textarea
           class="form-control"
           name="texto"
           id="texto"
           aria-describedby="helpId"
-          placeholder="Texto de la tarjeta"
+          placeholder="Texto de la actividad"
+          hidden
         ></textarea>
       </div>
       <div class="mb-3">
@@ -127,6 +138,46 @@
         Crear
       </button>
     </form>
+    <div
+    class="modal fade text-black"
+    id="quillModal"
+    tabindex="-1"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editor de Texto</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div id="editor" style="height: 300px"></div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cerrar
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="saveQuillContent()"
+            id="tuBotonGuardarOcerrar"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
     <!-- TARJETA DASHBOARD -->
 
     <div class="row">
@@ -141,7 +192,7 @@
           <div class="card-body text-dark">
             <p class="card-text truncate-text"><%= tarjeta.subtitulo %></p>
             <h5 class="card-title"><%= tarjeta.titulo %></h5>
-            <p class="card-text truncate-text"><%= tarjeta.texto %></p>
+            <p class="card-text truncate-text"><%- tarjeta.texto %></p>
             <a href="<%= tarjeta.link %>" target="_blank" class="card-text"
               ><%= tarjeta.link %></a
             >
@@ -246,14 +297,23 @@
               hidden
             />
           </div>
-          <div class="mb-3">
-            <label for="texto" class="form-label">Texto</label>
+          <div class="mb-3 d-flex gap-2">
+            <label for="texto" class="form-label">Texto Página</label>
+            <button
+              type="button"
+              class="btn btn-xl btn-primary mb-3"
+              onclick="openQuillEditor('editTexto')"
+            >
+            ➕
+            </button>
+
             <textarea
               class="form-control"
               id="editTexto"
               name="editTexto"
               aria-describedby="helpId"
-              placeholder="Texto de la tarjeta"
+              placeholder="Texto de la actividad"
+              hidden
             ></textarea>
           </div>
           <div class="mb-3">
