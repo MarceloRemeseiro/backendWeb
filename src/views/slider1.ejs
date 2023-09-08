@@ -32,24 +32,24 @@
         />
       </div>
 
-      <div style="margin-top: 20px">
-        <label for="subtitulo" class="form-label">Imagen</label>
+      <div class="mb-3 d-flex flex-column">
+        <label for="imagen" class="form-label imagen-input-create">Imagen</label>
+        <button
+        type="button"
+        class="btn btn-xl btn-primary"
+        onclick="openImagePicker('modalCreate', 'imagen', 'imagePreviewContainerCreate')"
+      >
+        ➕
+      </button>
         <input
           type="text"
-          class="form-control imagen-input-create"
+          class="form-control"
           name="imagen"
           id="imagen"
           aria-describedby="helpId"
-          placeholder="Imagen del slider"
-          autocomplete="off"
+          hidden
         />
-        <button
-          type="button"
-          class="btn btn-sm btn-secondary mt-1"
-          onclick="openImagePicker('modalCreate', 'imagen')"
-        >
-          Seleccionar imagen
-        </button>
+
         <!-- MODAL CREATE AGREGAR IMAGENES-->
 
         <div id="modalCreate" class="modal">
@@ -88,7 +88,9 @@
           </div>
         </div>
       </div>
-
+      <div id="imagePreviewContainerCreate">
+        <!-- Aquí se mostrará la vista previa de la imagen -->
+      </div>
       <div class="mb-3">
         <label for="link" class="form-label">Link</label>
         <input
@@ -104,7 +106,7 @@
         <input type="checkbox" class="form-check-input" name="web" id="web" />
         <label class="form-check-label" for="boton">Web</label>
       </div>
-   
+
       <button type="submit" class="btn btn-primary" style="margin-top: 15px">
         Crear
       </button>
@@ -124,7 +126,9 @@
           <div class="card-body text-dark">
             <h5 class="card-title"><%= slider.titulo %></h5>
             <p class="card-text"><%= slider.subtitulo %></p>
-            <a href="<%= slider.link %>" target="_blank" class="card-text"><%= slider.link %></a>
+            <a href="<%= slider.link %>" target="_blank" class="card-text"
+              ><%= slider.link %></a
+            >
 
             <small
               class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= slider.web ? 'bg-success ' : 'bg-danger' %>"
@@ -142,7 +146,9 @@
               data-type="slider1"
               >Editar</a
             >
-            <a href="/slider1/delete/<%= slider.id %>" class="btn btn-danger ms-2"
+            <a
+              href="/slider1/delete/<%= slider.id %>"
+              class="btn btn-danger ms-2"
               >Borrar</a
             >
           </div>
@@ -199,21 +205,27 @@
               name="editSubtitulo"
             />
           </div>
-          <div class="mb-3">
+          <div class="mb-3 d-flex gap-2">
+            <label for="imagen" class="form-label imagen-input-create"
+              >Imagen</label
+            >
             <input
               type="text"
               class="form-control"
               id="editImagen"
               name="editImagen"
-              autocomplete="off"
+              hidden
             />
             <button
               type="button"
-              class="btn btn-sm btn-secondary mt-1"
-              onclick="openImagePicker('modalSelectImage', 'editImagen')"
+              class="btn btn-xl btn-primary"
+              onclick="openImagePicker('modalSelectImage', 'editImagen', 'imagePreviewContainerEdit')"
             >
-              Seleccionar imagen
+              ➕
             </button>
+            <div id="imagePreviewContainerEdit">
+              <!-- Aquí se mostrará la vista previa de la imagen -->
+            </div>
           </div>
           <div class="mb-3">
             <label for="editLink" class="form-label">Link</label>
@@ -228,7 +240,7 @@
             />
             <label class="form-check-label" for="boton">Web</label>
           </div>
-         
+
           <input type="hidden" id="slider1Id" name="id" />
         </form>
         <!-- Modal para seleccionar imágenes -->

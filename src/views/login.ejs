@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background-color: #202020;
+        color: white;
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .card {
+        background-color: #202020;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .image-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+      .form-container {
+        padding: 20px;
+      }
+      img {
+        width: 150px;
+        height: 150px;
+      }
+      .text {
+        font-size: 16px;
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="image-container">
+          <img
+            src="/img/foto.png"
+            alt="Iglesia Evangelica de Vilassar de Mar"
+          />
+          <div class="text">
+            Dashboard Iglesia Evangelica de Vilassar de Mar
+          </div>
+        </div>
+        <div class="form-container">
+          <h1 class="text-center">Login</h1>
+          <form action="/login" method="post">
+            <div class="form-group">
+              <input
+                type="email"
+                id="username"
+                name="username"
+                class="form-control"
+                placeholder="Correo"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-control"
+                placeholder="Contraseña"
+              />
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary">Entrar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  <% if (loginFailed) { %> window.onload = function() {
+  alert('Vuelve a intentarlo'); }; <% } %>
+</script>

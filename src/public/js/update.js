@@ -19,15 +19,24 @@ let type;
 editButtons.forEach((button) => {
   button.addEventListener("click", async function (e) {
     e.preventDefault();
+
     type = e.target.dataset.type; // Asigna el valor del atributo de datos al tipo de variable
     const url = e.target.href;
     const response = await fetch(url);
-    const data = await response.json();
+    const [data] = await response.json(); // <-- Añade la desestructuración del array aquí
     idInput.value = data.id;
     imagenInput.value = data.imagen;
-    webInput.checked = data.web === true ? true : false;
+    webInput.checked = data.web;
 
-    
+    const imagePreviewContainer = modal.querySelector(
+      "#imagePreviewContainerEdit"
+    );
+    const previewImage = document.createElement("img");
+    previewImage.src = data.imagen; // URL de la imagen que ya está guardada
+    previewImage.alt = "Vista previa";
+    previewImage.style.maxWidth = "100px"; // Ajusta según necesites
+    imagePreviewContainer.innerHTML = ""; // Limpiar el contenedor
+    imagePreviewContainer.appendChild(previewImage); // Agregar la vista previa
 
     switch (type) {
       case "series":
@@ -40,7 +49,7 @@ editButtons.forEach((button) => {
         tituloInput.value = data.titulo;
         textoTarjetaInput.value = data.textoTarjeta;
         textoInput.value = data.texto;
-        botonInput.checked = data.boton === true ? true : false;
+        botonInput.checked = data.boton;
         ordenSelect.value = data.orden;
         break;
       case "slider1":
@@ -157,3 +166,56 @@ saveButton.addEventListener("click", function (e) {
       break;
   }
 });
+
+var quill; // Declaración global
+var toolbarOptions = [
+  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  ["bold", "italic", "underline", "strike"], // toggled buttons
+  ['link'],
+  [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+  [{ font: [] }],
+  [{ list: "ordered" }, { list: "bullet" }],
+  [{ align: [] }],
+  ["blockquote", "code-block"],
+  ["clean"],
+];
+
+document.addEventListener("DOMContentLoaded", (event) => {
+  quill = new Quill("#editor", {
+    theme: "snow",
+    modules: {
+      toolbar: toolbarOptions,
+    },
+  });
+
+  window.saveQuillContent = function () {
+    const htmlContent = quill.root.innerHTML;
+    document.getElementById("texto").value = htmlContent;
+    const modalEl = document.getElementById("quillModal");
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    modal.hide();
+  };
+});
+
+function openQuillEditor(textareaId) {
+  const textarea = document.getElementById(textareaId);
+  quill.setContents([]); // Limpia el contenido actual de Quill
+  quill.clipboard.dangerouslyPasteHTML(textarea.value); // Carga el contenido del textarea en Quill
+
+  // Abre el modal de Quill (aquí asumo que tienes un modal para Quill similar al que hicimos anteriormente)
+  const modalEl = document.getElementById("quillModal");
+  modalEl.style.zIndex = "2000"; // Ajusta el z-index
+  const modal = new bootstrap.Modal(modalEl);
+  modal.show();
+}
+
+window.saveQuillContentEdit = function () {
+  const htmlContent = quill.root.innerHTML;
+  document.getElementById("editTexto").value = htmlContent;
+  const modalEl = document.getElementById("quillModal");
+  const modal = bootstrap.Modal.getInstance(modalEl);
+  modal.hide();
+};
+document
+  .getElementById("tuBotonGuardarOcerrar")
+  .addEventListener("click", saveQuillContentEdit);
