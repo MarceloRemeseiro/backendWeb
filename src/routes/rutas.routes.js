@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const pool = require("../db/db");
+const {pool} = require("../db/db");
 
 router.get("/", async (req, res) => {
   try {
@@ -25,6 +25,10 @@ router.get("/", async (req, res) => {
     res.status(500).send("Error al obtener los datos");
   }
 });
+
+
+
+
 
 router.get("/imagenes", (req, res) => {
   res.render("imagenes", {

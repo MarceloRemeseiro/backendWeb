@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  database:
+    container_name: dbEevm
+    image: mysql:8.0
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./docker/volumes/mysql:/var/lib/mysql
+    env_file:
+      - .env
+
+  api:
+    container_name: eevm-api
+    image: node:18
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./:/home/node/app
+    working_dir: /home/node/app
+    command: "sh /home/node/app/docker/entrypoint/dev.sh"
+    env_file:
+      - .env
+    depends_on:
+      - database

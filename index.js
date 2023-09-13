@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const { createTables } = require('./src/db/db');
 const path = require("path");
 const cors = require("cors");
 require("dotenv").config();
@@ -20,6 +21,10 @@ app.set("views", __dirname + "/src/views");
 app.set("view engine", "ejs");
 
 //Middlewares
+app.use(async (req, res, next) => {
+  await createTables();
+  next();
+});
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "/src/public")));

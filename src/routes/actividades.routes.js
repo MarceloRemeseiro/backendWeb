@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const cloudinary = require("../utils/cloudinaryConecction");
-const pool = require("../db/db");
+const {pool} = require("../db/db");
 
 router.get("/actividades", async (req, res) => {
   try {
