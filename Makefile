@@ -15,6 +15,6 @@ stop: ## Stop containers
 restart: ## Restart containers
 	"$(MAKE)" stop && "$(MAKE)" start
 
-ssh-api: 
+api: 
 	docker exec -ti eevm-api bash
 
