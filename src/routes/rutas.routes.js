@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {pool} = require("../db/db");
+const { pool } = require("../db/db");
 
 router.get("/", async (req, res) => {
   try {
@@ -10,15 +10,17 @@ router.get("/", async (req, res) => {
     const [tarjetas] = await pool.query("SELECT * FROM tarjetas");
     const [tempsJunts] = await pool.query("SELECT * FROM tempsjunts");
     const [series] = await pool.query("SELECT * FROM series");
+    const [videos] = await pool.query("SELECT * FROM videos");
 
     res.render("index", {
-      sliders1: sliders1,
-      sliders2: sliders2,
-      actividades: actividades,
-      tarjetas: tarjetas,
-      tempsJunts: tempsJunts,
-      series: series,
-      titulo: "Inicio",
+      titulo: "Resumen",
+      sliders1,
+      sliders2,
+      actividades,
+      tarjetas,
+      tempsJunts,
+      series,
+      videos,
     });
   } catch (error) {
     console.error(error);

@@ -3,9 +3,9 @@
 <!-- Main Content -->
 <header class="container vh-100">
   <div class="d-flex flex-column align-items-center">
-    <h1 class="mt-3 text-uppercase fw-bold">Resumen</h1>
+    <h1 class="mt-3 text-uppercase fw-bold"><%= titulo %></h1>
   </div>
-  <hr>
+  <hr />
   <div class="d-flex flex-column">
     <h2>Slider Principal</h2>
     <div class="d-flex justify-content-center">
@@ -50,10 +50,10 @@
             />
           </a>
           <small
-          class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= slider.web ? 'bg-success ' : 'bg-danger' %>"
-        >
-          <%= slider.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
-        </small>
+            class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= slider.web ? 'bg-success ' : 'bg-danger' %>"
+          >
+            <%= slider.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+          </small>
         </div>
       </div>
       <% }) %>
@@ -103,10 +103,10 @@
             <p class="card-text"><%= actividad.titulo %></p>
             <p class="card-text"><%= actividad.textoTarjeta %></p>
             <small
-            class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= actividad.web ? 'bg-success ' : 'bg-danger' %>"
-          >
-            <%= actividad.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
-          </small>
+              class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= actividad.web ? 'bg-success ' : 'bg-danger' %>"
+            >
+              <%= actividad.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+            </small>
           </div>
         </div>
       </div>
@@ -130,10 +130,10 @@
             <p class="card-text"><%= serie.titulo %></p>
             <p class="card-text"><%= serie.subtitulo %></p>
             <small
-            class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= serie.web ? 'bg-success ' : 'bg-danger' %>"
-          >
-            <%= serie.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
-          </small>
+              class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= serie.web ? 'bg-success ' : 'bg-danger' %>"
+            >
+              <%= serie.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+            </small>
           </div>
         </div>
       </div>
@@ -160,10 +160,40 @@
             <p class="card-text"><%= temps.subtitulo %></p>
             <p class="card-text"><%- temps.texto %></p>
             <small
-            class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= temps.web ? 'bg-success ' : 'bg-danger' %>"
-          >
-            <%= temps.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
-          </small>
+              class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= temps.web ? 'bg-success ' : 'bg-danger' %>"
+            >
+              <%= temps.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+            </small>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+    <hr />
+    <div class="row mt-3">
+      <h2>Videos de Youtube</h2>
+
+      <% const videosOrder = videos.sort((a, b) => { const dateA = new
+      Date(a.fecha); const dateB = new Date(b.fecha); return dateB - dateA; });
+      videosOrder.forEach(videos => { %>
+      <div class="col-3">
+        <div class="card">
+          <a href="/videos">
+            <img
+              class="card-img-top"
+              src="<%= videos.imagen %>"
+              alt="<%= videos.titulo %>"
+            />
+          </a>
+          <div class="card-body text-black">
+            <p class="card-text"><%= videos.titulo %></p>
+            <p class="card-text"><%= videos.subtitulo %></p>
+            <p class="card-text"><%- videos.texto %></p>
+            <small
+              class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= videos.web ? 'bg-success ' : 'bg-danger' %>"
+            >
+              <%= videos.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+            </small>
           </div>
         </div>
       </div>

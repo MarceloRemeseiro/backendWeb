@@ -6,6 +6,7 @@ const cors = require("cors");
 require("dotenv").config();
 const indexRoutes = require("./src/routes/rutas.routes");
 const seriesRouter = require("./src/routes/series.routes");
+const videosRouter = require("./src/routes/videos.routes");
 const actividadesRouter = require("./src/routes/actividades.routes");
 const slider1Router = require("./src/routes/slider1.routes");
 const slider2Router = require("./src/routes/slider2.routes");
@@ -38,6 +39,7 @@ app.use(auth(config));
 
 app.use("/", ensureAuthenticated, indexRoutes);
 app.use("/", ensureAuthenticated, seriesRouter);
+app.use("/", ensureAuthenticated, videosRouter);
 app.use("/", ensureAuthenticated, actividadesRouter);
 app.use("/", ensureAuthenticated, slider1Router);
 app.use("/", ensureAuthenticated, slider2Router);

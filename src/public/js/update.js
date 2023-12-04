@@ -37,7 +37,10 @@ editButtons.forEach((button) => {
     previewImage.style.maxWidth = "100px"; // Ajusta según necesites
     imagePreviewContainer.innerHTML = ""; // Limpiar el contenedor
     imagePreviewContainer.appendChild(previewImage); // Agregar la vista previa
-
+    function formatDate(date) {
+      const dateObj = new Date(date);
+      return dateObj.toISOString().split("T")[0];
+    }
     switch (type) {
       case "series":
         tituloInput.value = data.titulo;
@@ -45,6 +48,7 @@ editButtons.forEach((button) => {
         linkInput.value = data.link;
         ordenSelect.value = data.orden;
         break;
+        
       case "actividades":
         tituloInput.value = data.titulo;
         textoTarjetaInput.value = data.textoTarjeta;
@@ -66,14 +70,21 @@ editButtons.forEach((button) => {
         textoInput.value = data.texto;
         linkInput.value = data.link;
         break;
+        case "videos":
+          const formattedDateVideos = formatDate(data.fecha);
+          tituloInput.value = data.titulo;
+          subtituloInput.value = data.subtitulo;
+          textoInput.value = data.texto;
+          linkInput.value = data.link;
+          fechaInput.value = formattedDateVideos;
+        break;
       case "tempsJunts":
-        const dateObj = new Date(data.fecha);
-        const formattedDate = dateObj.toISOString().split("T")[0];
+        const formattedDateTemps = formatDate(data.fecha);
         tituloInput.value = data.titulo;
         subtituloInput.value = data.subtitulo;
         textoInput.value = data.texto;
         linkInput.value = data.link;
-        fechaInput.value = formattedDate;
+        fechaInput.value = formattedDateTemps;
         break;
     }
 
@@ -151,6 +162,18 @@ saveButton.addEventListener("click", function (e) {
         link: linkInput.value,
       };
       updateData(`/tarjetas/update/${id}`, data);
+      break;
+      case "videos":
+      data = {
+        titulo: tituloInput.value,
+        subtitulo: subtituloInput.value,
+        texto: textoInput.value,
+        imagen: imagenInput.value,
+        fecha: fechaInput.value,
+        web: webInput.checked,
+        link: linkInput.value,
+      };
+      updateData(`/videos/update/${id}`, data);
       break;
     case "tempsJunts":
       data = {

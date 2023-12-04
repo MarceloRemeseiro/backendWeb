@@ -36,6 +36,16 @@ const createTables = async () => {
       web TINYINT(1),
       orden INT(11)
     );`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS videos (
+      id INT(11) AUTO_INCREMENT PRIMARY KEY,
+      titulo VARCHAR(191),
+      subtitulo VARCHAR(191),
+      texto VARCHAR(1000),
+      imagen VARCHAR(191),
+      link VARCHAR(191),
+      web TINYINT(1),
+      fecha DATETIME(3)
+    );`);
 
     await pool.query(`CREATE TABLE IF NOT EXISTS slider1 (
       id INT(11) AUTO_INCREMENT PRIMARY KEY,
