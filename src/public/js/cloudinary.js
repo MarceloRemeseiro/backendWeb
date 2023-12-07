@@ -1,4 +1,7 @@
-
+/* let cloudinary = ""
+let cloudName = ""
+let apiKey = ""
+ */
 window.ml = cloudinary.createMediaLibrary(
   {
     cloud_name: cloudName,

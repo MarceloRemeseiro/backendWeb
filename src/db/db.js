@@ -13,15 +13,15 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
-
 const createTables = async () => {
   try {
+
     await pool.query(`CREATE TABLE IF NOT EXISTS actividades (
       id INT(11) AUTO_INCREMENT PRIMARY KEY,
       titulo VARCHAR(191),
       textoTarjeta VARCHAR(1000),
       imagen VARCHAR(191),
-      texto VARCHAR(1000),
+      texto TEXT,
       boton TINYINT(1),
       web TINYINT(1),
       orden INT(11)
@@ -40,7 +40,7 @@ const createTables = async () => {
       id INT(11) AUTO_INCREMENT PRIMARY KEY,
       titulo VARCHAR(191),
       subtitulo VARCHAR(191),
-      texto VARCHAR(1000),
+      texto TEXT,
       imagen VARCHAR(191),
       link VARCHAR(191),
       web TINYINT(1),
@@ -68,6 +68,7 @@ const createTables = async () => {
       id INT(11) AUTO_INCREMENT PRIMARY KEY,
       titulo VARCHAR(191),
       subtitulo VARCHAR(191),
+      texto TEXT,
       imagen VARCHAR(191),
       link VARCHAR(191),
       web TINYINT(1),
@@ -79,7 +80,7 @@ const createTables = async () => {
       titulo VARCHAR(191),
       subtitulo VARCHAR(191),
       imagen VARCHAR(191),
-      texto VARCHAR(1000),
+      texto TEXT,
       fecha DATETIME(3),
       link VARCHAR(191),
       web TINYINT(1)

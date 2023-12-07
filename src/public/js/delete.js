@@ -3,13 +3,16 @@ document.addEventListener("DOMContentLoaded", function () {
   deleteButtons.forEach((button) => {
     button.addEventListener("click", function (e) {
       e.preventDefault();
-      const url = e.target.href;
-      fetch(url, {
-        method: "DELETE",
-      }).then(() => {
-        window.location.reload();
-      });
+      const confirmation = confirm("Seguro quieres borrarlo?");
+      if (confirmation) {
+        const url = e.target.href;
+        fetch(url, {
+          method: "DELETE",
+        }).then(() => {
+          window.location.reload();
+        });
+      }
     });
   });
-})
+});
   
