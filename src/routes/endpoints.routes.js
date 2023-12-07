@@ -78,7 +78,7 @@ router.get("/tarjetas", async (req, res) => {
 
 router.get("/videos", async (req, res) => {
   try {
-    const [videos] = await pool.query('SELECT * FROM videos WHERE web = true');
+    const [videos] = await pool.query('SELECT * FROM videos WHERE web = true ORDER BY FECHA DESC LIMIT 7');
     const videosFormatted = videos.map(video => {
       const { web, ...otherProps } = video;  // Elimina la propiedad web
       return otherProps;
@@ -92,7 +92,7 @@ router.get("/videos", async (req, res) => {
 
 router.get("/tempsJunts", async (req, res) => {
   try {
-    const [tempsJunts] = await pool.query('SELECT * FROM tempsjunts WHERE web = true');
+    const [tempsJunts] = await pool.query('SELECT * FROM tempsjunts WHERE web = true ORDER BY FECHA DESC LIMIT 7');
     const tempsJuntsFormatted = tempsJunts.map(temps => {
       const { web, ...otherProps } = temps;  // Elimina la propiedad web
       return otherProps;

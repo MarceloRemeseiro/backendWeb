@@ -3,9 +3,10 @@ const router = express.Router();
 const {pool} = require("../db/db"); // Importar la conexión a la base de datos
 const cloudinary = require("../utils/cloudinaryConecction");
 
+
 router.get("/videos", async (req, res) => {
   try {
-    const [videos] = await pool.query("SELECT * FROM videos");
+    const [videos] = await pool.query("SELECT * FROM videos ORDER BY FECHA DESC LIMIT 7");
     res.render("videos", {
       videos: videos,
       titulo: "Videos de youtube",

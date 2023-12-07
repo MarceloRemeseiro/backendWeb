@@ -206,9 +206,10 @@
           <div class="card-body text-dark">
             <h5 class="card-title"><%= video.titulo %></h5>
             <p class="card-text"><%= video.subtitulo %></p>
-            <% const dateObj = new Date(video.fecha); const options = { weekday:
-            'long', year: 'numeric', month: 'long', day: 'numeric' }; const
-            formattedDate = dateObj.toLocaleDateString('es-ES', options); %>
+            <% const dateObj = new Date(video.fecha); const options = { year:
+            'numeric', month: '2-digit', day: '2-digit', timeZone:
+            'Europe/Madrid' }; const formattedDate =
+            dateObj.toLocaleDateString('es-ES', options); %>
             <p class="card-text"><%= formattedDate %></p>
             <p class="card-text truncate-text"><%- video.texto %></p>
             <a href="<%= video.link %>" target="_blank" class="card-text"
@@ -301,9 +302,7 @@
             />
           </div>
           <div class="mb-3 d-flex gap-2">
-            <label for="imagen" class="form-label imagen-input-create"
-              >Imagen</label
-            >
+            <label for="imagen" class="form-label imagen-input-create" />
 
             <button
               type="button"
