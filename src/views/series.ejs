@@ -125,7 +125,7 @@
     <!-- TARJETA DASHBOARD -->
 
     <div class="row">
-      <% series.sort((a, b) => a.orden - b.orden).forEach(serie => { %>
+      <% series.sort((a, b) => b.orden - a.orden).forEach(serie => { %>
       <div class="col-md-3">
         <div class="card mb-4 position-relative">
           <img
