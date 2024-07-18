@@ -13,17 +13,14 @@ RUN npm install
 # Copia el resto de los archivos del proyecto
 COPY . .
 
-# Construye la aplicación
-RUN npm run build
-
 # Etapa de producción
 FROM nginx:alpine AS runtime
 
 # Copia el archivo de configuración de Nginx
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
-# Copia los archivos construidos al directorio de Nginx
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copia los archivos de la aplicación al directorio de Nginx
+COPY --from=build /app /usr/share/nginx/html
 
 # Expone el puerto en el que Nginx estará escuchando
 EXPOSE 80

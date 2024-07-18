@@ -4,6 +4,7 @@ services:
     build:
       context: .
       target: build
+    image: my-express-app
     environment:
       - NODE_ENV=production
       - MYSQL_HOST=database
@@ -15,6 +16,8 @@ services:
       - my-network
     depends_on:
       - database
+    ports:
+      - "3000:3000"
 
   database:
     image: mysql:5.7
@@ -34,6 +37,7 @@ services:
     build:
       context: .
       target: runtime
+    image: my-nginx-proxy
     ports:
       - "80:80"
     depends_on:
