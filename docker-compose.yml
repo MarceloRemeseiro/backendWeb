@@ -1,8 +1,9 @@
 version: '3'
 services:
   app:
-    build: .
-    image: my-express-app
+    build:
+      context: .
+      target: build
     environment:
       - NODE_ENV=production
       - MYSQL_HOST=database
@@ -14,8 +15,6 @@ services:
       - my-network
     depends_on:
       - database
-    ports:
-      - "3000:3000"
 
   database:
     image: mysql:5.7
@@ -33,9 +32,8 @@ services:
 
   nginx:
     build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    image: my-nginx-proxy
+      context: .
+      target: runtime
     ports:
       - "80:80"
     depends_on:
