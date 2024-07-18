@@ -1,26 +1,51 @@
-version: "3.8"
-
+version: '3'
 services:
-  database:
-    container_name: dbEevm
-    image: mysql:8.0
-    ports:
-      - "3308:3306"
-    volumes:
-      - ./docker/volumes/mysql:/var/lib/mysql
-    env_file:
-      - .env
-
-  api:
-    container_name: eevm-api
-    image: node:14.21.2
-    ports:
-      - "4000:4000"
-    volumes:
-      - ./:/home/node/app
-    working_dir: /home/node/app
-    command: "sh /home/node/app/docker/entrypoint/dev.sh"
-    env_file:
-      - .env
+  app:
+    build: .
+    image: my-express-app
+    environment:
+      - NODE_ENV=production
+      - MYSQL_HOST=database
+      - MYSQL_USER=root
+      - MYSQL_DATABASE=dbEevm
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_PORT=3306
+    networks:
+      - my-network
     depends_on:
       - database
+    ports:
+      - "3000:3000"
+
+  database:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: dbEevm
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3306:3306"
+    networks:
+      - my-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: my-nginx-proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
