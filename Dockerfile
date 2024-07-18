@@ -1,7 +1,17 @@
-# Etapa de construcción
-FROM node:lts-alpine AS build
+# Usa una imagen base oficial de Node.js
+FROM node:lts-alpine
 
-# Establece el directorio de trabajo
+# Instala MySQL y sus dependencias
+RUN apk add --no-cache mysql mysql-client openrc bash
+
+# Crea directorios necesarios y ajusta permisos
+RUN mkdir /run/mysqld && chown -R mysql:mysql /run/mysqld && \
+    mkdir /var/lib/mysql && chown -R mysql:mysql /var/lib/mysql
+
+# Inicializa la base de datos
+RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql
+
+# Establece el directorio de trabajo para Node.js
 WORKDIR /app
 
 # Copia los archivos de dependencias
@@ -13,17 +23,11 @@ RUN npm install
 # Copia el resto de los archivos del proyecto
 COPY . .
 
-# Etapa de producción
-FROM nginx:alpine AS runtime
+# Copia el script de inicialización de MySQL
+COPY docker-entrypoint.sh /usr/local/bin/
 
-# Copia el archivo de configuración de Nginx
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+# Expone los puertos necesarios
+EXPOSE 3000 3306
 
-# Copia los archivos de la aplicación al directorio de Nginx
-COPY --from=build /app /usr/share/nginx/html
-
-# Expone el puerto en el que Nginx estará escuchando
-EXPOSE 80
-
-# Comando para ejecutar Nginx en primer plano
-CMD ["nginx", "-g", "daemon off;"]
+# Comando para ejecutar MySQL y la aplicación Node.js
+CMD ["bash", "/usr/local/bin/docker-entrypoint.sh"]
