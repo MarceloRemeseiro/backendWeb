@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const { createTables } = require('./src/db/db');
+const { initDb } = require('./src/db/db');
 const path = require("path");
 const cors = require("cors");
 require("dotenv").config();
@@ -16,27 +16,21 @@ const endpointRouter = require("./src/routes/endpoints.routes");
 const { config, ensureAuthenticated } = require("./src/utils/auth");
 const { auth } = require("express-openid-connect");
 
-//Settings
+// Settings
 app.set("port", 4000);
-app.set("views", __dirname + "/src/views");
+app.set("views", path.join(__dirname, "/src/views"));
 app.set("view engine", "ejs");
 
-//Middlewares
-app.use(async (req, res, next) => {
-  await createTables();
-  next();
-});
-app.use(cors())
+// Middlewares
+app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "/src/public")));
 app.use(express.urlencoded({ extended: true }));
 
+app.use(auth(config));
 app.use("/api", endpointRouter);
 
-//Todo esto de abajo tiene que estar protegido por el login
-app.use(auth(config));
-
-
+// Rutas protegidas por autenticación
 app.use("/", ensureAuthenticated, indexRoutes);
 app.use("/", ensureAuthenticated, seriesRouter);
 app.use("/", ensureAuthenticated, videosRouter);
@@ -46,6 +40,11 @@ app.use("/", ensureAuthenticated, slider2Router);
 app.use("/", ensureAuthenticated, tarjetasRouter);
 app.use("/", ensureAuthenticated, tempsJuntsRouter);
 
-app.listen(app.get("port"), () => {
-  console.log("Server on port", app.get("port"));
+// Inicializar la base de datos y arrancar el servidor
+initDb().then(() => {
+  app.listen(app.get("port"), () => {
+    console.log("Server on port", app.get("port"));
+  });
+}).catch(err => {
+  console.error("Error initializing database:", err);
 });

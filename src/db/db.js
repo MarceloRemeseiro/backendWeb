@@ -1,7 +1,17 @@
-//src/db/db.js
-
 const mysql = require('mysql2/promise');
 require("dotenv").config();
+
+const createDatabaseIfNotExists = async () => {
+  const connection = await mysql.createConnection({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_ROOT_PASSWORD,
+    port: process.env.MYSQL_PORT,
+  });
+
+  await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.MYSQL_DATABASE}\`;`);
+  await connection.end();
+};
 
 const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
@@ -13,9 +23,9 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
+
 const createTables = async () => {
   try {
-
     await pool.query(`CREATE TABLE IF NOT EXISTS actividades (
       id INT(11) AUTO_INCREMENT PRIMARY KEY,
       titulo VARCHAR(191),
@@ -36,6 +46,7 @@ const createTables = async () => {
       web TINYINT(1),
       orden INT(11)
     );`);
+
     await pool.query(`CREATE TABLE IF NOT EXISTS videos (
       id INT(11) AUTO_INCREMENT PRIMARY KEY,
       titulo VARCHAR(191),
@@ -74,7 +85,7 @@ const createTables = async () => {
       web TINYINT(1),
       orden INT(11)
     );`);
-    
+
     await pool.query(`CREATE TABLE IF NOT EXISTS tempsjunts (
       id INT(11) AUTO_INCREMENT PRIMARY KEY,
       titulo VARCHAR(191),
@@ -85,12 +96,15 @@ const createTables = async () => {
       link VARCHAR(191),
       web TINYINT(1)
     );`);
-    
 
   } catch (error) {
     console.error('Error creando las tablas:', error);
   }
 };
 
+const initDb = async () => {
+  await createDatabaseIfNotExists();
+  await createTables();
+};
 
-module.exports = {pool,createTables};
+module.exports = { pool, initDb };
