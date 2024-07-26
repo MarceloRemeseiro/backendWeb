@@ -14,7 +14,7 @@ const tarjetasRouter = require("./src/routes/tarjetas.routes");
 const tempsJuntsRouter = require("./src/routes/tempsJunts.routes");
 const endpointRouter = require("./src/routes/endpoints.routes");
 const { config, ensureAuthenticated } = require("./src/utils/auth");
-const { auth } = require("express-openid-connect");
+/* const { auth } = require("express-openid-connect"); */
 
 // Settings
 app.set("port", 4000);
@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "/src/public")));
 app.use(express.urlencoded({ extended: true }));
 
-app.use(auth(config));
+/* app.use(auth(config)); */
 app.use("/api", endpointRouter);
 
 // Rutas protegidas por autenticación

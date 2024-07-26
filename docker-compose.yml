@@ -1,0 +1,46 @@
+version: "3.8"
+services:
+  mysql_eevm:
+    image: mysql/mysql-server:5.7
+    container_name: mysql_eevm
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "28082003"
+      MYSQL_DATABASE: "dbEevm"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "28082003"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend_eevm:
+    build: .
+    container_name: backend_eevm
+    restart: unless-stopped
+    environment:
+      MYSQL_HOST: mysql_eevm
+      MYSQL_USER: root
+      MYSQL_DATABASE: dbEevm
+      MYSQL_ROOT_PASSWORD: "28082003"
+      MYSQL_PORT: 3306
+      CLOUDINARY_CLOUD_NAME: 'da5ewc1ul'
+      CLOUDINARY_API_KEY: '749274397221526'
+      CLOUDINARY_API_SECRET: 'xgRH4votfNr18YNSvs1S0XMHxdI'
+      SECRET: 'e3f6d7ca8a1bb2c3d4e5f69a7b8c9d0e1f2a3b4c5d6e7f89'
+      BASE_URL: 'http://85.10.196.133'
+      CLIENT_ID: '9Xe0AUZyH5Q186M2UHJx5U9FwMOf56lj'
+      ISSUER: 'https://dev-x2djttsvwzp500rf.us.auth0.com'
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mysql_eevm
+    networks:
+      - eevm
+
+networks:
+  eevm:
+    driver: bridge
+
+volumes:
+  mysql_data:
