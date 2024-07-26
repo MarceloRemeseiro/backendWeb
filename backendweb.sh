@@ -2,8 +2,6 @@
 
 # Configuración
 REPOSITORIO="backendWeb"
-CONTAINER_NAME="backend_eevm"
-DB_CONTAINER_NAME="mysql_eevm"
 COMPOSE_FILE="docker-compose.yml"
 SCRIPT_DIR=$(dirname "$0")  # Obtiene el directorio del script
 
@@ -40,5 +38,17 @@ docker-compose up --build -d
 sleep 10
 
 # Verificar si los contenedores están corriendo
-if [[ "$(is_container_running $CONTAINER_NAME)" == "true" ]]; then
-    echo "El contenedor $CONTAINER_NAME
+BACKEND_RUNNING=$(docker inspect -f '{{.State.Running}}' backend_eevm)
+MYSQL_RUNNING=$(docker inspect -f '{{.State.Running}}' mysql_eevm)
+
+if [ "$BACKEND_RUNNING" == "true" ]; then
+    echo "El contenedor backend_eevm está corriendo."
+else
+    echo "Error: El contenedor backend_eevm no se está ejecutando."
+fi
+
+if [ "$MYSQL_RUNNING" == "true" ]; then
+    echo "El contenedor mysql_eevm está corriendo."
+else
+    echo "Error: El contenedor mysql_eevm no se está ejecutando."
+fi
