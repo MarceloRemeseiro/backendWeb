@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const {pool} = require("../db/db"); 
-
+const { queryWithLog } = require("../db/db");
 
 router.get("/series", async (req, res) => {
   try {
-    const [series] = await pool.query('SELECT * FROM series WHERE web = true');
-    const seriesFormatted = series.map(serie => {
-      const { web, ...otherProps } = serie;  // Elimina la propiedad web
+    const result = await queryWithLog('SELECT * FROM series WHERE web = true');
+    const seriesFormatted = result.rows.map(serie => {
+      const { web, ...otherProps } = serie;
       return otherProps;
     });
     res.json(seriesFormatted);
@@ -19,12 +18,12 @@ router.get("/series", async (req, res) => {
 
 router.get("/actividades", async (req, res) => {
   try {
-    const [actividades] = await pool.query('SELECT * FROM actividades WHERE web = true');
-    const actividadesFormatted = actividades.map(actividad => {
-      const { web, ...otherProps } = actividad;  // Elimina la propiedad web
+    const result = await queryWithLog('SELECT * FROM actividades WHERE web = true');
+    const actividadesFormatted = result.rows.map(actividad => {
+      const { web, ...otherProps } = actividad;
       return {
         ...otherProps,
-        boton: actividad.boton === 1
+        boton: Boolean(actividad.boton) // En PostgreSQL ya viene como boolean
       };
     });
     res.json(actividadesFormatted);
@@ -36,9 +35,9 @@ router.get("/actividades", async (req, res) => {
 
 router.get("/slider1", async (req, res) => {
   try {
-    const [slider1] = await pool.query('SELECT * FROM slider1 WHERE web = true');
-    const slider1Formatted = slider1.map(slide => {
-      const { web, ...otherProps } = slide;  // Elimina la propiedad web
+    const result = await queryWithLog('SELECT * FROM slider1 WHERE web = true');
+    const slider1Formatted = result.rows.map(slide => {
+      const { web, ...otherProps } = slide;
       return otherProps;
     });
     res.json(slider1Formatted);
@@ -50,9 +49,9 @@ router.get("/slider1", async (req, res) => {
 
 router.get("/slider2", async (req, res) => {
   try {
-    const [slider2] = await pool.query('SELECT * FROM slider2 WHERE web = true');
-    const slider2Formatted = slider2.map(slide => {
-      const { web, ...otherProps } = slide;  // Elimina la propiedad web
+    const result = await queryWithLog('SELECT * FROM slider2 WHERE web = true');
+    const slider2Formatted = result.rows.map(slide => {
+      const { web, ...otherProps } = slide;
       return otherProps;
     });
     res.json(slider2Formatted);
@@ -64,9 +63,9 @@ router.get("/slider2", async (req, res) => {
 
 router.get("/tarjetas", async (req, res) => {
   try {
-    const [tarjetas] = await pool.query('SELECT * FROM tarjetas WHERE web = true');
-    const tarjetasFormatted = tarjetas.map(tarjeta => {
-      const { web, ...otherProps } = tarjeta;  // Elimina la propiedad web
+    const result = await queryWithLog('SELECT * FROM tarjetas WHERE web = true');
+    const tarjetasFormatted = result.rows.map(tarjeta => {
+      const { web, ...otherProps } = tarjeta;
       return otherProps;
     });
     res.json(tarjetasFormatted);
@@ -78,9 +77,9 @@ router.get("/tarjetas", async (req, res) => {
 
 router.get("/videos", async (req, res) => {
   try {
-    const [videos] = await pool.query('SELECT * FROM videos WHERE web = true ORDER BY FECHA DESC LIMIT 7');
-    const videosFormatted = videos.map(video => {
-      const { web, ...otherProps } = video;  // Elimina la propiedad web
+    const result = await queryWithLog('SELECT * FROM videos WHERE web = true ORDER BY fecha DESC LIMIT 7');
+    const videosFormatted = result.rows.map(video => {
+      const { web, ...otherProps } = video;
       return otherProps;
     });
     res.json(videosFormatted);
@@ -92,9 +91,9 @@ router.get("/videos", async (req, res) => {
 
 router.get("/tempsJunts", async (req, res) => {
   try {
-    const [tempsJunts] = await pool.query('SELECT * FROM tempsjunts WHERE web = true ORDER BY FECHA DESC LIMIT 7');
-    const tempsJuntsFormatted = tempsJunts.map(temps => {
-      const { web, ...otherProps } = temps;  // Elimina la propiedad web
+    const result = await queryWithLog('SELECT * FROM tempsjunts WHERE web = true ORDER BY fecha DESC LIMIT 7');
+    const tempsJuntsFormatted = result.rows.map(temps => {
+      const { web, ...otherProps } = temps;
       return otherProps;
     });
     res.json(tempsJuntsFormatted);
@@ -104,4 +103,4 @@ router.get("/tempsJunts", async (req, res) => {
   }
 });
 
-module.exports = router; // Exportar el router
+module.exports = router;

@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const cloudinary = require("../utils/cloudinaryConecction");
-const {pool} = require("../db/db");
+const { queryWithLog } = require("../db/db");
 
 router.get("/actividades", async (req, res) => {
   try {
-    const [actividades] = await pool.query("SELECT * FROM actividades");
+    const result = await queryWithLog("SELECT * FROM actividades");
     res.render("actividades", {
-      actividades: actividades,
+      actividades: result.rows,
       titulo: "Actividades",
       tituloPagina: "Actividades de la Iglesia",
     });
@@ -20,8 +20,8 @@ router.get("/actividades", async (req, res) => {
 router.post("/actividades", async (req, res) => {
   try {
     const { titulo, textoTarjeta, imagen, boton, texto, orden, web } = req.body;
-    await pool.query(
-      "INSERT INTO actividades (titulo, textoTarjeta, imagen, boton, texto, orden, web) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    await queryWithLog(
+      "INSERT INTO actividades (titulo, \"textoTarjeta\", imagen, boton, texto, orden, web) VALUES ($1, $2, $3, $4, $5, $6, $7)",
       [
         titulo,
         textoTarjeta,
@@ -42,7 +42,7 @@ router.post("/actividades", async (req, res) => {
 router.delete("/actividades/delete/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    await pool.query("DELETE FROM actividades WHERE id = ?", [id]);
+    await queryWithLog("DELETE FROM actividades WHERE id = $1", [id]);
     res.redirect("/actividades");
   } catch (error) {
     console.error(error);
@@ -52,11 +52,11 @@ router.delete("/actividades/delete/:id", async (req, res) => {
 
 router.get("/actividades/edit/:id", async (req, res) => {
   try {
-    const [actividad] = await pool.query(
-      "SELECT * FROM actividades WHERE id = ?",
+    const result = await queryWithLog(
+      "SELECT * FROM actividades WHERE id = $1",
       [parseInt(req.params.id)]
     );
-    res.json(actividad);
+    res.json(result.rows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error al editar la Actividad");
@@ -66,17 +66,17 @@ router.get("/actividades/edit/:id", async (req, res) => {
 router.put("/actividades/update/:id", async (req, res) => {
   try {
     const { titulo, textoTarjeta, imagen, boton, texto, orden, web } = req.body;
-    await pool.query(
-      "UPDATE actividades SET titulo = ?, textoTarjeta = ?, imagen = ?, boton = ?, texto = ?, orden = ?, web = ? WHERE id = ?",
+    await queryWithLog(
+      "UPDATE actividades SET titulo = $1, \"textoTarjeta\" = $2, imagen = $3, boton = $4, texto = $5, orden = $6, web = $7 WHERE id = $8",
       [
         titulo,
         textoTarjeta,
         imagen,
         boton,
         texto,
-        [parseInt(orden)],
+        parseInt(orden),
         web,
-        [parseInt(req.params.id)],
+        parseInt(req.params.id)
       ]
     );
     res.redirect("/actividades");
@@ -88,13 +88,13 @@ router.put("/actividades/update/:id", async (req, res) => {
 
 router.get("/api/images", async (req, res) => {
   try {
-    const cursor = req.query.cursor; // Obtener el cursor de la URL de la solicitud
+    const cursor = req.query.cursor;
     const search = cloudinary.search
       .sort_by("public_id", "desc")
       .max_results(30);
 
     if (cursor) {
-      search.next_cursor(cursor); // Si hay un cursor, úsalo en la búsqueda
+      search.next_cursor(cursor);
     }
 
     const result = await search.execute();
@@ -102,11 +102,11 @@ router.get("/api/images", async (req, res) => {
 
     res.json({
       images: images,
-      nextCursor: result.next_cursor, // Devuelve el siguiente cursor en la respuesta JSON
+      nextCursor: result.next_cursor,
     });
   } catch (error) {
     res.status(500).send("Error al obtener las imágenes");
   }
 });
 
-module.exports = router; // Exportar el router
+module.exports = router;

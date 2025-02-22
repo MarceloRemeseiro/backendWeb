@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const {pool} = require("../db/db"); // Importar la conexión a la base de datos
+const { queryWithLog } = require("../db/db");
 const cloudinary = require("../utils/cloudinaryConecction");
 
 router.get("/tempsJunts", async (req, res) => {
   try {
-    const [tempsJunts] = await pool.query("SELECT * FROM tempsjunts");
+    const result = await queryWithLog("SELECT * FROM tempsjunts");
     res.render("tempsJunts", {
-      tempsJunts: tempsJunts,
+      tempsJunts: result.rows,
       titulo: "Temps Junts",
       tituloPagina: "Temps Junts",
     });
@@ -20,8 +20,8 @@ router.get("/tempsJunts", async (req, res) => {
 router.post("/tempsJunts", async (req, res) => {
   try {
     const { titulo, subtitulo, fecha, imagen, link, texto, web } = req.body;
-    await pool.query(
-      "INSERT INTO tempsjunts (titulo, subtitulo, fecha, imagen, link, web, texto) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    await queryWithLog(
+      "INSERT INTO tempsjunts (titulo, subtitulo, fecha, imagen, link, web, texto) VALUES ($1, $2, $3, $4, $5, $6, $7)",
       [
         titulo,
         subtitulo,
@@ -42,7 +42,7 @@ router.post("/tempsJunts", async (req, res) => {
 router.delete("/tempsJunts/delete/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    await pool.query("DELETE FROM tempsjunts WHERE id = ?", [id]);
+    await queryWithLog("DELETE FROM tempsjunts WHERE id = $1", [id]);
     res.redirect("/tempsJunts");
   } catch (error) {
     console.error(error);
@@ -52,11 +52,11 @@ router.delete("/tempsJunts/delete/:id", async (req, res) => {
 
 router.get("/tempsJunts/edit/:id", async (req, res) => {
   try {
-    const [tempsjunts] = await pool.query(
-      "SELECT * FROM tempsjunts WHERE id = ?",
+    const result = await queryWithLog(
+      "SELECT * FROM tempsjunts WHERE id = $1",
       [parseInt(req.params.id)]
     );
-    res.json(tempsjunts);
+    res.json(result.rows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error al editar tempsJunts");
@@ -66,8 +66,8 @@ router.get("/tempsJunts/edit/:id", async (req, res) => {
 router.put("/tempsJunts/update/:id", async (req, res) => {
   try {
     const { titulo, subtitulo, fecha, imagen, link, texto, web } = req.body;
-    await pool.query(
-      "UPDATE tempsjunts SET titulo = ?, subtitulo = ?, fecha = ?, imagen = ?, link = ?, web = ?, texto = ? WHERE id = ?",
+    await queryWithLog(
+      "UPDATE tempsjunts SET titulo = $1, subtitulo = $2, fecha = $3, imagen = $4, link = $5, web = $6, texto = $7 WHERE id = $8",
       [
         titulo,
         subtitulo,

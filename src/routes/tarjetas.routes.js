@@ -1,14 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const {pool} = require("../db/db"); // Importar la conexión a la base de datos
+const { queryWithLog } = require("../db/db");
 const cloudinary = require("../utils/cloudinaryConecction");
 
 router.get("/tarjetas", async (req, res) => {
-  
   try {
-    const [tarjetas] = await pool.query('SELECT * FROM tarjetas');
+    const result = await queryWithLog('SELECT * FROM tarjetas');
     res.render("tarjetas", {
-      tarjetas: tarjetas,
+      tarjetas: result.rows,
       titulo: "Tarjetas",
       tituloPagina: "Tarjetas de la web",
     });
@@ -21,8 +20,8 @@ router.get("/tarjetas", async (req, res) => {
 router.post("/tarjetas", async (req, res) => {
   try {
     const { titulo, subtitulo, imagen, texto, web, link } = req.body;
-    await pool.query(
-      'INSERT INTO tarjetas (titulo, subtitulo, imagen, texto, web, link) VALUES (?, ?, ?, ?, ?, ?)',
+    await queryWithLog(
+      'INSERT INTO tarjetas (titulo, subtitulo, imagen, texto, web, link) VALUES ($1, $2, $3, $4, $5, $6)',
       [titulo, subtitulo, imagen, texto, web === "on" ? true : false, link]
     );
     res.redirect("/tarjetas");
@@ -35,7 +34,7 @@ router.post("/tarjetas", async (req, res) => {
 router.delete("/tarjetas/delete/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    await pool.query('DELETE FROM tarjetas WHERE id = ?', [id]);
+    await queryWithLog('DELETE FROM tarjetas WHERE id = $1', [id]);
     res.redirect("/tarjetas");
   } catch (error) {
     console.error(error);
@@ -45,8 +44,11 @@ router.delete("/tarjetas/delete/:id", async (req, res) => {
 
 router.get("/tarjetas/edit/:id", async (req, res) => {
   try {
-    const [tarjeta] = await pool.query('SELECT * FROM tarjetas WHERE id = ?', [parseInt(req.params.id)]);
-    res.json(tarjeta);
+    const result = await queryWithLog(
+      'SELECT * FROM tarjetas WHERE id = $1',
+      [parseInt(req.params.id)]
+    );
+    res.json(result.rows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error al editar la tarjeta");
@@ -56,8 +58,8 @@ router.get("/tarjetas/edit/:id", async (req, res) => {
 router.put("/tarjetas/update/:id", async (req, res) => {
   try {
     const { titulo, subtitulo, imagen, texto, web, link } = req.body;
-    await pool.query(
-      'UPDATE tarjetas SET titulo = ?, subtitulo = ?, imagen = ?, texto = ?, web = ?, link = ? WHERE id = ?',
+    await queryWithLog(
+      'UPDATE tarjetas SET titulo = $1, subtitulo = $2, imagen = $3, texto = $4, web = $5, link = $6 WHERE id = $7',
       [titulo, subtitulo, imagen, texto, web, link, parseInt(req.params.id)]
     );
     res.redirect("/tarjetas");

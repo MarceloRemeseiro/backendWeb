@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const {pool} = require("../db/db"); // Importar la conexión a la base de datos
+const { queryWithLog } = require("../db/db"); // Cambiamos para usar queryWithLog
 const cloudinary = require("../utils/cloudinaryConecction");
 
 
 router.get("/videos", async (req, res) => {
   try {
-    const [videos] = await pool.query("SELECT * FROM videos ORDER BY FECHA DESC LIMIT 7");
+    const result = await queryWithLog("SELECT * FROM videos ORDER BY fecha DESC LIMIT 7");
     res.render("videos", {
-      videos: videos,
+      videos: result.rows,
       titulo: "Videos de youtube",
       tituloPagina: "Videos de youtube",
     });
@@ -21,8 +21,8 @@ router.get("/videos", async (req, res) => {
 router.post("/videos", async (req, res) => {
   try {
     const { titulo, subtitulo, fecha, imagen, link, texto, web } = req.body;
-    await pool.query(
-      "INSERT INTO videos (titulo, subtitulo, fecha, imagen, link, web, texto) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    await queryWithLog(
+      "INSERT INTO videos (titulo, subtitulo, fecha, imagen, link, web, texto) VALUES ($1, $2, $3, $4, $5, $6, $7)",
       [
         titulo,
         subtitulo,
@@ -43,7 +43,7 @@ router.post("/videos", async (req, res) => {
 router.delete("/videos/delete/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    await pool.query("DELETE FROM videos WHERE id = ?", [id]);
+    await queryWithLog("DELETE FROM videos WHERE id = $1", [id]);
     res.redirect("/videos");
   } catch (error) {
     console.error(error);
@@ -53,11 +53,11 @@ router.delete("/videos/delete/:id", async (req, res) => {
 
 router.get("/videos/edit/:id", async (req, res) => {
   try {
-    const [videos] = await pool.query(
-      "SELECT * FROM videos WHERE id = ?",
+    const result = await queryWithLog(
+      "SELECT * FROM videos WHERE id = $1",
       [parseInt(req.params.id)]
     );
-    res.json(videos);
+    res.json(result.rows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error al editar videos");
@@ -67,8 +67,8 @@ router.get("/videos/edit/:id", async (req, res) => {
 router.put("/videos/update/:id", async (req, res) => {
   try {
     const { titulo, subtitulo, fecha, imagen, link, texto, web } = req.body;
-    await pool.query(
-      "UPDATE videos SET titulo = ?, subtitulo = ?, fecha = ?, imagen = ?, link = ?, web = ?, texto = ? WHERE id = ?",
+    await queryWithLog(
+      "UPDATE videos SET titulo = $1, subtitulo = $2, fecha = $3, imagen = $4, link = $5, web = $6, texto = $7 WHERE id = $8",
       [
         titulo,
         subtitulo,

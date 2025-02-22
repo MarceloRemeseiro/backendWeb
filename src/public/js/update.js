@@ -20,56 +20,61 @@ editButtons.forEach((button) => {
   button.addEventListener("click", async function (e) {
     e.preventDefault();
 
-    type = e.target.dataset.type; // Asigna el valor del atributo de datos al tipo de variable
+    type = e.target.dataset.type;
     const url = e.target.href;
-    const response = await fetch(url);
-    const [data] = await response.json(); // <-- Añade la desestructuración del array aquí
-    idInput.value = data.id;
-    imagenInput.value = data.imagen;
-    webInput.checked = data.web;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Error al obtener datos');
+      
+      const data = await response.json();
+      console.log('Datos recibidos:', data);
+      
+      idInput.value = data.id;
+      imagenInput.value = data.imagen;
+      webInput.checked = data.web;
 
-    const imagePreviewContainer = modal.querySelector(
-      "#imagePreviewContainerEdit"
-    );
-    const previewImage = document.createElement("img");
-    previewImage.src = data.imagen; // URL de la imagen que ya está guardada
-    previewImage.alt = "Vista previa";
-    previewImage.style.maxWidth = "100px"; // Ajusta según necesites
-    imagePreviewContainer.innerHTML = ""; // Limpiar el contenedor
-    imagePreviewContainer.appendChild(previewImage); // Agregar la vista previa
-    function formatDate(date) {
-      const dateObj = new Date(date);
-      return dateObj.toISOString().split("T")[0];
-    }
-    switch (type) {
-      case "series":
-        tituloInput.value = data.titulo;
-        subtituloInput.value = data.subtitulo;
-        linkInput.value = data.link;
-        ordenSelect.value = data.orden;
-        break;
+      const imagePreviewContainer = modal.querySelector("#imagePreviewContainerEdit");
+      const previewImage = document.createElement("img");
+      previewImage.src = data.imagen;
+      previewImage.alt = "Vista previa";
+      previewImage.style.maxWidth = "100px";
+      imagePreviewContainer.innerHTML = "";
+      imagePreviewContainer.appendChild(previewImage);
+
+      function formatDate(date) {
+        const dateObj = new Date(date);
+        return dateObj.toISOString().split("T")[0];
+      }
+
+      switch (type) {
+        case "series":
+          tituloInput.value = data.titulo;
+          subtituloInput.value = data.subtitulo;
+          linkInput.value = data.link;
+          ordenSelect.value = data.orden;
+          break;
         
-      case "actividades":
-        tituloInput.value = data.titulo;
-        textoTarjetaInput.value = data.textoTarjeta;
-        textoInput.value = data.texto;
-        botonInput.checked = data.boton;
-        ordenSelect.value = data.orden;
-        break;
-      case "slider1":
-        tituloInput.value = data.titulo;
-        subtituloInput.value = data.subtitulo;
-        linkInput.value = data.link;
-        break;
-      case "slider2":
-        linkInput.value = data.link;
-        break;
-      case "tarjetas":
-        tituloInput.value = data.titulo;
-        subtituloInput.value = data.subtitulo;
-        textoInput.value = data.texto;
-        linkInput.value = data.link;
-        break;
+        case "actividades":
+          tituloInput.value = data.titulo;
+          textoTarjetaInput.value = data.textoTarjeta;
+          textoInput.value = data.texto;
+          botonInput.checked = data.boton;
+          ordenSelect.value = data.orden;
+          break;
+        case "slider1":
+          tituloInput.value = data.titulo;
+          subtituloInput.value = data.subtitulo;
+          linkInput.value = data.link;
+          break;
+        case "slider2":
+          linkInput.value = data.link;
+          break;
+        case "tarjetas":
+          tituloInput.value = data.titulo;
+          subtituloInput.value = data.subtitulo;
+          textoInput.value = data.texto;
+          linkInput.value = data.link;
+          break;
         case "videos":
           const formattedDateVideos = formatDate(data.fecha);
           tituloInput.value = data.titulo;
@@ -77,20 +82,23 @@ editButtons.forEach((button) => {
           textoInput.value = data.texto;
           linkInput.value = data.link;
           fechaInput.value = formattedDateVideos;
-        break;
-      case "tempsJunts":
-        const formattedDateTemps = formatDate(data.fecha);
-        tituloInput.value = data.titulo;
-        subtituloInput.value = data.subtitulo;
-        textoInput.value = data.texto;
-        linkInput.value = data.link;
-        fechaInput.value = formattedDateTemps;
-        break;
+          break;
+        case "tempsJunts":
+          const formattedDateTemps = formatDate(data.fecha);
+          tituloInput.value = data.titulo;
+          subtituloInput.value = data.subtitulo;
+          textoInput.value = data.texto;
+          linkInput.value = data.link;
+          fechaInput.value = formattedDateTemps;
+          break;
+      }
+
+      form.action = `/update/${data.id}`;
+      modal.style.display = "block";
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+      alert('Error al cargar los datos para editar');
     }
-
-    form.action = `/update/${data.id}`;
-
-    modal.style.display = "block";
   });
 });
 
@@ -163,7 +171,7 @@ saveButton.addEventListener("click", function (e) {
       };
       updateData(`/tarjetas/update/${id}`, data);
       break;
-      case "videos":
+    case "videos":
       data = {
         titulo: tituloInput.value,
         subtitulo: subtituloInput.value,

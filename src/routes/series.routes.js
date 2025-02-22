@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const {pool} = require("../db/db"); // Importar la conexión a la base de datos
+const { queryWithLog } = require("../db/db");
 const cloudinary = require("../utils/cloudinaryConecction");
 
 router.get("/series", async (req, res) => {
   try {
-    const [series] = await pool.query("SELECT * FROM series");
+    const result = await queryWithLog("SELECT * FROM series");
     res.render("series", {
-      series: series,
+      series: result.rows,
       titulo: "Series",
       tituloPagina: "Series de Youtube",
     });
@@ -20,8 +20,8 @@ router.get("/series", async (req, res) => {
 router.post("/series", async (req, res) => {
   try {
     const { titulo, subtitulo, imagen, link, web, orden } = req.body;
-    await pool.query(
-      "INSERT INTO series (titulo, subtitulo, imagen, link, web, orden) VALUES (?, ?, ?, ?, ?, ?)",
+    await queryWithLog(
+      "INSERT INTO series (titulo, subtitulo, imagen, link, web, orden) VALUES ($1, $2, $3, $4, $5, $6)",
       [
         titulo,
         subtitulo,
@@ -41,7 +41,7 @@ router.post("/series", async (req, res) => {
 router.delete("/series/delete/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    await pool.query("DELETE FROM series WHERE id = ?", [id]);
+    await queryWithLog("DELETE FROM series WHERE id = $1", [id]);
     res.redirect("/series");
   } catch (error) {
     console.error(error);
@@ -51,10 +51,11 @@ router.delete("/series/delete/:id", async (req, res) => {
 
 router.get("/series/edit/:id", async (req, res) => {
   try {
-    const [serie] = await pool.query("SELECT * FROM series WHERE id = ?", [
-      parseInt(req.params.id),
-    ]);
-    res.json(serie);
+    const result = await queryWithLog(
+      "SELECT * FROM series WHERE id = $1",
+      [parseInt(req.params.id)]
+    );
+    res.json(result.rows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error al editar la serie");
@@ -64,8 +65,8 @@ router.get("/series/edit/:id", async (req, res) => {
 router.put("/series/update/:id", async (req, res) => {
   try {
     const { titulo, subtitulo, imagen, link, web, orden } = req.body;
-    await pool.query(
-      "UPDATE series SET titulo = ?, subtitulo = ?, imagen = ?, link = ?, web = ?, orden = ? WHERE id = ?",
+    await queryWithLog(
+      "UPDATE series SET titulo = $1, subtitulo = $2, imagen = $3, link = $4, web = $5, orden = $6 WHERE id = $7",
       [
         titulo,
         subtitulo,

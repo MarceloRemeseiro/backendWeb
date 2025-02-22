@@ -1,14 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const {pool} = require("../db/db"); // Importar la conexión a la base de datos
+const { queryWithLog } = require("../db/db");
 const cloudinary = require("../utils/cloudinaryConecction");
 
 router.get("/slider1", async (req, res) => {
- 
   try {
-    const [slider1] = await pool.query('SELECT * FROM slider1');
+    const result = await queryWithLog('SELECT * FROM slider1');
     res.render("slider1", {
-      slider1: slider1,
+      slider1: result.rows,
       titulo: "Slider Principal",
       tituloPagina: "Slider Principal",
     });
@@ -21,8 +20,8 @@ router.get("/slider1", async (req, res) => {
 router.post("/slider1", async (req, res) => {
   try {
     const { titulo, subtitulo, imagen, link, web } = req.body;
-    await pool.query(
-      'INSERT INTO slider1 (titulo, subtitulo, imagen, link, web) VALUES (?, ?, ?, ?, ?)',
+    await queryWithLog(
+      'INSERT INTO slider1 (titulo, subtitulo, imagen, link, web) VALUES ($1, $2, $3, $4, $5)',
       [titulo, subtitulo, imagen, link, web === "on" ? true : false]
     );
     res.redirect("/slider1");
@@ -35,7 +34,7 @@ router.post("/slider1", async (req, res) => {
 router.delete("/slider1/delete/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    await pool.query('DELETE FROM slider1 WHERE id = ?', [id]);
+    await queryWithLog('DELETE FROM slider1 WHERE id = $1', [id]);
     res.redirect("/slider1");
   } catch (error) {
     console.error(error);
@@ -45,8 +44,11 @@ router.delete("/slider1/delete/:id", async (req, res) => {
 
 router.get("/slider1/edit/:id", async (req, res) => {
   try {
-    const [serie] = await pool.query('SELECT * FROM slider1 WHERE id = ?', [parseInt(req.params.id)]);
-    res.json(serie);
+    const result = await queryWithLog(
+      'SELECT * FROM slider1 WHERE id = $1',
+      [parseInt(req.params.id)]
+    );
+    res.json(result.rows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error al editar la serie");
@@ -56,8 +58,8 @@ router.get("/slider1/edit/:id", async (req, res) => {
 router.put("/slider1/update/:id", async (req, res) => {
   try {
     const { titulo, subtitulo, imagen, link, web } = req.body;
-    await pool.query(
-      'UPDATE slider1 SET titulo = ?, subtitulo = ?, imagen = ?, link = ?, web = ? WHERE id = ?',
+    await queryWithLog(
+      'UPDATE slider1 SET titulo = $1, subtitulo = $2, imagen = $3, link = $4, web = $5 WHERE id = $6',
       [titulo, subtitulo, imagen, link, web, parseInt(req.params.id)]
     );
     res.redirect("/slider1");

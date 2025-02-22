@@ -1,14 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const {pool} = require("../db/db"); // Importar la conexión a la base de datos
+const { queryWithLog } = require("../db/db");
 const cloudinary = require("../utils/cloudinaryConecction");
 
 router.get("/slider2", async (req, res) => {
- 
   try {
-    const [slider2] = await pool.query('SELECT * FROM slider2');
+    const result = await queryWithLog('SELECT * FROM slider2');
     res.render("slider2", {
-      slider2: slider2,
+      slider2: result.rows,
       titulo: "Slider secundario",
       tituloPagina: "Slider secundario",
     });
@@ -21,8 +20,8 @@ router.get("/slider2", async (req, res) => {
 router.post("/slider2", async (req, res) => {
   try {
     const { imagen, link, web } = req.body;
-    await pool.query(
-      'INSERT INTO slider2 (imagen, link, web) VALUES (?, ?, ?)',
+    await queryWithLog(
+      'INSERT INTO slider2 (imagen, link, web) VALUES ($1, $2, $3)',
       [imagen, link, web === "on" ? true : false]
     );
     res.redirect("/slider2");
@@ -35,7 +34,7 @@ router.post("/slider2", async (req, res) => {
 router.delete("/slider2/delete/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id, 10);
-    await pool.query('DELETE FROM slider2 WHERE id = ?', [id]);
+    await queryWithLog('DELETE FROM slider2 WHERE id = $1', [id]);
     res.redirect("/slider2");
   } catch (error) {
     console.error(error);
@@ -45,8 +44,11 @@ router.delete("/slider2/delete/:id", async (req, res) => {
 
 router.get("/slider2/edit/:id", async (req, res) => {
   try {
-    const [serie] = await pool.query('SELECT * FROM slider2 WHERE id = ?', [parseInt(req.params.id)]);
-    res.json(serie);
+    const result = await queryWithLog(
+      'SELECT * FROM slider2 WHERE id = $1',
+      [parseInt(req.params.id)]
+    );
+    res.json(result.rows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).send("Error al editar la serie");
@@ -56,8 +58,8 @@ router.get("/slider2/edit/:id", async (req, res) => {
 router.put("/slider2/update/:id", async (req, res) => {
   try {
     const { imagen, link, web } = req.body;
-    await pool.query(
-      'UPDATE slider2 SET imagen = ?, link = ?, web = ? WHERE id = ?',
+    await queryWithLog(
+      'UPDATE slider2 SET imagen = $1, link = $2, web = $3 WHERE id = $4',
       [imagen, link, web, parseInt(req.params.id)]
     );
     res.redirect("/slider2");
