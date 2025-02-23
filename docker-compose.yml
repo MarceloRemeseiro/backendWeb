@@ -8,8 +8,8 @@ services:
       - .env.production
     ports:
       - "4000:4000"
-    depends_on:
-      - mysql_eevm
+    volumes:
+      - backend_eevm_data:/app/data
     networks:
       - eevm
 
@@ -18,4 +18,5 @@ networks:
     driver: bridge
 
 volumes:
-  mysql_data:
+  backend_eevm_data:
+  
