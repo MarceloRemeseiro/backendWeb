@@ -19,12 +19,12 @@ router.get("/actividades", async (req, res) => {
 
 router.post("/actividades", async (req, res) => {
   try {
-    const { titulo, textoTarjeta, imagen, boton, texto, orden, web } = req.body;
+    const { titulo, textotarjeta, imagen, boton, texto, orden, web } = req.body;
     await queryWithLog(
-      "INSERT INTO actividades (titulo, \"textoTarjeta\", imagen, boton, texto, orden, web) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      "INSERT INTO actividades (titulo, \"textotarjeta\", imagen, boton, texto, orden, web) VALUES ($1, $2, $3, $4, $5, $6, $7)",
       [
         titulo,
-        textoTarjeta,
+        textotarjeta,
         imagen,
         boton === "on" ? true : false,
         texto,
@@ -65,12 +65,12 @@ router.get("/actividades/edit/:id", async (req, res) => {
 
 router.put("/actividades/update/:id", async (req, res) => {
   try {
-    const { titulo, textoTarjeta, imagen, boton, texto, orden, web } = req.body;
+    const { titulo, textotarjeta, imagen, boton, texto, orden, web } = req.body;
     await queryWithLog(
-      "UPDATE actividades SET titulo = $1, \"textoTarjeta\" = $2, imagen = $3, boton = $4, texto = $5, orden = $6, web = $7 WHERE id = $8",
+      "UPDATE actividades SET titulo = $1, \"textotarjeta\" = $2, imagen = $3, boton = $4, texto = $5, orden = $6, web = $7 WHERE id = $8",
       [
         titulo,
-        textoTarjeta,
+        textotarjeta,
         imagen,
         boton,
         texto,
