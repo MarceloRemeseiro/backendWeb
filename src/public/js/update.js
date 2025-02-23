@@ -56,7 +56,7 @@ editButtons.forEach((button) => {
         
         case "actividades":
           tituloInput.value = data.titulo;
-          textoTarjetaInput.value = data.textoTarjeta;
+          textoTarjetaInput.value = data.textotarjeta;
           textoInput.value = data.texto;
           botonInput.checked = data.boton;
           ordenSelect.value = data.orden;
@@ -134,7 +134,7 @@ saveButton.addEventListener("click", function (e) {
       data = {
         titulo: tituloInput.value,
         imagen: imagenInput.value,
-        textoTarjeta: textoTarjetaInput.value,
+        textotarjeta: textoTarjetaInput.value,
         texto: textoInput.value,
         boton: botonInput.checked,
         web: webInput.checked,

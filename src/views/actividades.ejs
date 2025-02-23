@@ -21,12 +21,12 @@
         />
       </div>
       <div class="mb-3">
-        <label for="textoTarjeta" class="form-label">Texto tarjeta</label>
+        <label for="textotarjeta" class="form-label">Texto tarjeta</label>
         <input
           type="text"
           class="form-control"
-          name="textoTarjeta"
-          id="textoTarjeta"
+          name="textotarjeta"
+          id="textotarjeta"
           aria-describedby="helpId"
           placeholder="Subtítulo de la actividad"
         />
@@ -198,7 +198,7 @@
           />
           <div class="card-body text-dark">
             <h5 class="card-title"><%= actividad.titulo %></h5>
-            <p class="card-text"><%= actividad.textoTarjeta %></p>
+            <p class="card-text"><%= actividad.textotarjeta %></p>
             <p class="card-text truncate-text"><%- actividad.texto %></p>
             <small
               class="w-50 px-2 py-1 text-center text-white rounded <%= actividad.boton ? 'bg-success ' : 'bg-danger' %>"
@@ -285,7 +285,7 @@
             <input
               type="text"
               class="form-control"
-              id="editTextoTarjeta"
+              id="editTextotarjeta"
               name="editTextoTarjeta"
             />
           </div>
@@ -408,7 +408,7 @@
         </button>
         <button type="button" class="btn btn-primary" id="saveChanges">
           Guardar Cambios</button
-        >S
+        >
       </div>
     </div>
   </div>
