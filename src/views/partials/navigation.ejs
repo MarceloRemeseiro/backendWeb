@@ -1,105 +1,138 @@
 <!-- Custom styles for this template -->
-<body class="d-flex">
-  <nav>
-    <div
-      class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
-      style="width: 280px"
-    >
-      <a
-        href="/"
-        class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
-      >
-        <img src="/img/foto.png" width="40" height="32" alt="" />
-        <span class="fs-4">EEVM</span>
+<div class="d-flex">
+  <!-- Sidebar -->
+  <nav class="sidebar bg-dark" style="min-width: 280px; position: fixed; height: 100vh;">
+    <div class="d-flex flex-column h-100 p-3 text-white">
+      <!-- Logo/Header -->
+      <a href="/" class="d-flex align-items-center mb-3 text-white text-decoration-none">
+        <img src="/img/foto.png" width="40" height="32" alt="EEVM Logo" class="me-2" />
+        <span class="fs-4 fw-semibold">EEVM</span>
       </a>
       <hr />
+      
+      <!-- Navigation Links -->
       <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item">
-          <a href="/" class="nav-link text-white" aria-current="page">
-            🏚️ INICIO
+        <li class="nav-item mb-1">
+          <a href="/" class="nav-link text-white rounded" aria-current="page">
+            <i class="fas fa-home me-2"></i> INICIO
           </a>
         </li>
-        <li>
-          <a href="/slider1" class="nav-link text-white">
-            🎞️ Slider Principal
+        <li class="mb-1">
+          <a href="/slider1" class="nav-link text-white rounded">
+            <i class="fas fa-film me-2"></i> Slider Principal
           </a>
         </li>
-        <li>
-          <a href="/slider2" class="nav-link text-white">
-            🎞️ Slider Secundario
+        <li class="mb-1">
+          <a href="/slider2" class="nav-link text-white rounded">
+            <i class="fas fa-images me-2"></i> Slider Secundario
           </a>
         </li>
-        <li>
-          <a href="/tarjetas" class="nav-link text-white"> 📇 Tarjetas </a>
-        </li>
-        <li>
-          <a href="/actividades" class="nav-link text-white">
-            🗓️ Actividades
+        <li class="mb-1">
+          <a href="/tarjetas" class="nav-link text-white rounded">
+            <i class="fas fa-id-card me-2"></i> Tarjetas
           </a>
         </li>
-        <li>
-          <a href="/videos" class="nav-link text-white"> 🎬 Videos Youtube </a>
+        <li class="mb-1">
+          <a href="/actividades" class="nav-link text-white rounded">
+            <i class="fas fa-calendar-alt me-2"></i> Actividades
+          </a>
         </li>
-        <li>
-          <a href="/series" class="nav-link text-white"> 🎬 Series Youtube </a>
+        <li class="mb-1">
+          <a href="/videos" class="nav-link text-white rounded">
+            <i class="fab fa-youtube me-2"></i> Videos Youtube
+          </a>
         </li>
-        <li>
-          <a href="/tempsJunts" class="nav-link text-white"> 👨‍👩‍👧‍👦 Temps Junts </a>
+        <li class="mb-1">
+          <a href="/series" class="nav-link text-white rounded">
+            <i class="fas fa-tv me-2"></i> Series Youtube
+          </a>
+        </li>
+        <li class="mb-1">
+          <a href="/tempsJunts" class="nav-link text-white rounded">
+            <i class="fas fa-users me-2"></i> Temps Junts
+          </a>
         </li>
         <hr />
-
-        <li>
-          <a href="/imagenes" class="nav-link text-white"> 📷 Imagenes</a>
+        <li class="mb-1">
+          <a href="/imagenes" class="nav-link text-white rounded">
+            <i class="fas fa-camera me-2"></i> Imagenes
+          </a>
         </li>
-
-        <hr />
-
-        <ul class="nav">
-          <li class="mt-5">
-            <a
-              href="https://www.esglesiavilassar.com/"
-              target="_blank"
-              class="nav-link text-white"
-            >
-              <img src="/img/foto.png" width="40" height="40" alt="" />
-              Vista previa</a
-            >
-          </li>
-        </ul>
       </ul>
-      <hr />
-      <div class="dropdown">
-        <a
-          href="#"
-          class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-          id="dropdownUser1"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
+
+      <!-- Preview Link -->
+      <div class="mt-auto">
+        <hr />
+        <a 
+          href="https://www.esglesiavilassar.com/" 
+          target="_blank"
+          class="nav-link text-white d-flex align-items-center"
         >
-          <strong>Salir</strong>
+          <img src="/img/foto.png" width="30" height="30" alt="" class="me-2" />
+          <span>Vista previa</span>
+          <i class="fas fa-external-link-alt ms-2"></i>
         </a>
-        <ul
-          class="dropdown-menu dropdown-menu-dark text-small shadow"
-          aria-labelledby="dropdownUser1"
-        >
-          <li><a class="dropdown-item" href="/logout">Logout</a></li>
-        </ul>
+        
+        <!-- Logout Button -->
+        <div class="dropdown mt-3">
+          <button 
+            class="btn btn-outline-light dropdown-toggle w-100" 
+            type="button" 
+            id="dropdownUser1" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false"
+          >
+            <i class="fas fa-sign-out-alt me-2"></i>
+            <span>Salir</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark w-100" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
-  <div style="width: 280px"></div>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var navItems = document.querySelectorAll("nav ul li a");
-      var currentPath = window.location.pathname;
 
-      navItems.forEach(function (navItem) {
-        if (navItem.getAttribute("href") === currentPath) {
-          navItem.classList.add("active");
-        } else {
-          navItem.classList.remove("active");
-        }
-      });
+  <!-- Spacer to prevent content from hiding under sidebar -->
+  <div style="min-width: 280px;"></div>
+</div>
+
+<style>
+.sidebar {
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.nav-link {
+  transition: all 0.2s;
+  border-radius: 5px;
+}
+
+.nav-link:hover {
+  background-color: rgba(255,255,255,0.1);
+  transform: translateX(5px);
+}
+
+.nav-link.active {
+  background-color: #0d6efd !important;
+  color: white !important;
+}
+
+.dropdown-toggle::after {
+  margin-left: auto;
+}
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var navItems = document.querySelectorAll("nav ul li a");
+    var currentPath = window.location.pathname;
+
+    navItems.forEach(function (navItem) {
+      if (navItem.getAttribute("href") === currentPath) {
+        navItem.classList.add("active");
+      } else {
+        navItem.classList.remove("active");
+      }
     });
-  </script>
-</body>
+  });
+</script>

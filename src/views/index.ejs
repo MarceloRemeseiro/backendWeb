@@ -1,10 +1,14 @@
 <%- include("partials/header") %>
 
+
 <!-- Main Content -->
-<header class="container vh-100">
-  <div class="d-flex flex-column align-items-center">
-    <h1 class="mt-3 text-uppercase fw-bold"><%= titulo %></h1>
+<div class="container-fluid py-4" style="padding: 50px; width: calc(100% - 280px);">
+  <div class="row justify-content-center mb-4">
+    <div class="col-12 text-center">
+      <h1 class="display-4 text-uppercase fw-bold"><%= titulo %></h1>
+    </div>
   </div>
+
   <hr />
   <div class="d-flex flex-column">
     <h2>Slider Principal</h2>
@@ -172,34 +176,118 @@
     <hr />
     <div class="row mt-3">
       <h2>Videos de Youtube</h2>
-
-      <% const videosOrder = videos.sort((a, b) => { const dateA = new
-      Date(a.fecha); const dateB = new Date(b.fecha); return dateB - dateA; });
-      videosOrder.forEach(videos => { %>
-      <div class="col-3">
-        <div class="card">
-          <a href="/videos">
-            <img
-              class="card-img-top"
-              src="<%= videos.imagen %>"
-              alt="<%= videos.titulo %>"
-            />
-          </a>
-          <div class="card-body text-black">
-            <p class="card-text"><%= videos.titulo %></p>
-            <p class="card-text"><%= videos.subtitulo %></p>
-            <p class="card-text"><%- videos.texto %></p>
-            <small
-              class="position-absolute top-0 start-0 p-1 text-center rounded text-white <%= videos.web ? 'bg-success ' : 'bg-danger' %>"
-            >
-              <%= videos.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
-            </small>
-          </div>
-        </div>
-      </div>
-      <% }) %>
     </div>
   </div>
-</header>
 
+  <!-- Videos de Youtube Section -->
+  <section class="mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="h1 fw-bold">Videos de Youtube</h2>
+      <a href="/videos" class="btn btn-outline-primary">Ver todos</a>
+    </div>
+
+    <div class="row g-4">
+      <% const videosOrder = videos.sort((a, b) => { 
+        const dateA = new Date(a.fecha); 
+        const dateB = new Date(b.fecha); 
+        return dateB - dateA; 
+      });
+      videosOrder.forEach(video => { %>
+        <div class="col-md-6 col-lg-4 col-xl-3">
+          <div class="card h-100 shadow-sm hover-card">
+            <!-- Badge de estado -->
+            <div class="position-absolute top-0 start-0 m-2">
+              <span class="badge <%= video.web ? 'bg-success' : 'bg-danger' %>">
+                <%= video.web ? 'PUBLICADO' : 'NO PUBLICADO' %>
+              </span>
+            </div>
+            
+            <!-- Imagen con overlay al hacer hover -->
+            <div class="position-relative video-thumbnail">
+              <img 
+                src="<%= video.imagen %>" 
+                class="card-img-top object-fit-cover"
+                alt="<%= video.titulo %>"
+                style="height: 200px;"
+              >
+              <div class="overlay d-flex align-items-center justify-content-center">
+                <i class="fas fa-play-circle fa-3x text-white"></i>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <h5 class="card-title fw-bold mb-2 text-truncate">
+                <%= video.titulo %>
+              </h5>
+              <p class="card-subtitle text-muted mb-2 small">
+                <%= video.subtitulo %>
+              </p>
+              <% if(video.texto) { %>
+                <div class="card-text small text-muted">
+                  <%- video.texto %>
+                </div>
+              <% } %>
+              <p class="card-text mt-2">
+                <small class="text-muted">
+                  <%= new Date(video.fecha).toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  }) %>
+                </small>
+              </p>
+            </div>
+
+            <div class="card-footer bg-transparent border-top-0">
+              <a href="<%= video.link %>" 
+                 class="btn btn-sm btn-outline-danger w-100"
+                 target="_blank">
+                <i class="fab fa-youtube me-2"></i>Ver en YouTube
+              </a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+</div>
+
+<!-- Agregar estos estilos al final del archivo o en main.css -->
+<style>
+.hover-card {
+  transition: transform 0.2s ease-in-out;
+}
+
+.hover-card:hover {
+  transform: translateY(-5px);
+}
+
+.video-thumbnail {
+  overflow: hidden;
+}
+
+.video-thumbnail .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.video-thumbnail:hover .overlay {
+  opacity: 1;
+}
+
+.card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>
+
+<!-- Agregar Font Awesome en el footer -->
 <%- include("partials/footer") %>
