@@ -13,7 +13,7 @@ const slider2Router = require("./src/routes/slider2.routes");
 const tarjetasRouter = require("./src/routes/tarjetas.routes");
 const tempsJuntsRouter = require("./src/routes/tempsJunts.routes");
 const endpointRouter = require("./src/routes/endpoints.routes");
-const { config, ensureAuthenticated } = require("./src/utils/auth");
+const { ensureAuthenticated } = require("./src/utils/auth");
 /* const { auth } = require("express-openid-connect"); */
 
 // Settings

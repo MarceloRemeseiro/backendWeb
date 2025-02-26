@@ -1,15 +1,10 @@
-// Middleware que siempre permite el acceso
+// Middleware simplificado que siempre permite el acceso
 const ensureAuthenticated = (req, res, next) => {
+    // Añadimos una propiedad user mock para evitar errores en caso de que algo la necesite
+    req.user = {
+        isAuthenticated: true
+    };
     next();
 };
 
-const config = {
-  authRequired: false,
-  auth0Logout: true,
-  secret: process.env.SECRET,
-  baseURL: process.env.BASE_URL,
-  clientID: process.env.CLIENT_ID,
-  issuerBaseURL: process.env.ISSUER,
-};
-
-module.exports = { config, ensureAuthenticated };
+module.exports = { ensureAuthenticated };
