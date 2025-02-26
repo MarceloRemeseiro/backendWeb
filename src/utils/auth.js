@@ -1,9 +1,7 @@
-function ensureAuthenticated(req, res, next) {
-  if (process.env.NODE_ENV === "production" && !req.oidc.isAuthenticated()) {
-    return res.redirect("/login");
-  }
-  next();
-}
+// Middleware que siempre permite el acceso
+const ensureAuthenticated = (req, res, next) => {
+    next();
+};
 
 const config = {
   authRequired: false,
