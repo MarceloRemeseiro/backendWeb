@@ -1,8 +1,22 @@
 {
     "users": [
         {
-            "username": "admin",
-            "password": "admin123"
+            "username": "lydia",
+            "password": "Salmo150"
+        },
+        {
+            "username": "marcelo",
+            "password": "Salmo150"
+        },
+        {
+            "username": "isaac",
+            "password": "Salmo150"
+        },
+        {
+            "username": "jose",
+            "password": "Salmo150"
         }
+        
+            
     ]
 } 

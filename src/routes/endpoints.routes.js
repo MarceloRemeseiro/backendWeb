@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { queryWithLog } = require("../db/db");
+const cloudinary = require("../utils/cloudinaryConecction");
 
 router.get("/series", async (req, res) => {
   try {
@@ -100,6 +101,31 @@ router.get("/tempsJunts", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Error al recuperar los Temps Junts");
+  }
+});
+
+// Ruta para obtener imágenes de Cloudinary (pública)
+router.get("/images", async (req, res) => {
+  try {
+    const cursor = req.query.cursor;
+    const search = cloudinary.search
+      .sort_by("public_id", "desc")
+      .max_results(30);
+
+    if (cursor) {
+      search.next_cursor(cursor);
+    }
+
+    const result = await search.execute();
+    const images = result.resources;
+
+    res.json({
+      images: images,
+      nextCursor: result.next_cursor,
+    });
+  } catch (error) {
+    console.error("Error al obtener imágenes de Cloudinary:", error);
+    res.status(500).send("Error al obtener las imágenes");
   }
 });
 
