@@ -6,14 +6,47 @@ const imagesPerPage = 12; // 4 columnas x 3 filas
 function openImagePicker(modalId, inputId, previewContainerId) {
   const modalElement = document.getElementById(modalId);
   const inputElement = document.getElementById(inputId);
-  modalElement.style.display = "block";
+  
+  // Usar Bootstrap para mostrar el modal
+  if (typeof bootstrap !== 'undefined') {
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+  } else {
+    // Fallback si bootstrap no está disponible
+    modalElement.style.display = "block";
+  }
 
-  const closeModalButton = modalElement.querySelector(
-    ".cancelar-galeria-create"
-  );
-  closeModalButton.addEventListener("click", function () {
-    modalElement.style.display = "none";
-  });
+  // Configurar el botón de cierre
+  const closeModalButton = modalElement.querySelector(".cancelar-galeria-create");
+  if (closeModalButton) {
+    closeModalButton.addEventListener("click", function () {
+      if (typeof bootstrap !== 'undefined') {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) modal.hide();
+      } else {
+        modalElement.style.display = "none";
+      }
+    });
+  }
+  
+  // Añadir botón de cierre (X) si no existe
+  const modalHeader = modalElement.querySelector(".modal-header");
+  if (modalHeader && !modalHeader.querySelector(".btn-close")) {
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.className = "btn-close";
+    closeButton.setAttribute("data-bs-dismiss", "modal");
+    closeButton.setAttribute("aria-label", "Close");
+    closeButton.addEventListener("click", function() {
+      if (typeof bootstrap !== 'undefined') {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) modal.hide();
+      } else {
+        modalElement.style.display = "none";
+      }
+    });
+    modalHeader.appendChild(closeButton);
+  }
 
   const imageGrid = modalElement.querySelector(".image-grid");
   
@@ -24,13 +57,14 @@ function openImagePicker(modalId, inputId, previewContainerId) {
   nextCursor = null;
   currentPage = 1;
   
-  // Crear contenedor de paginación si no existe
-  let paginationContainer = modalElement.querySelector(".pagination-container");
+  // Crear contenedor de paginación dentro del container-fluid
+  const containerFluid = modalElement.querySelector(".container-fluid");
+  let paginationContainer = containerFluid.querySelector(".pagination-container");
+  
   if (!paginationContainer) {
     paginationContainer = document.createElement("div");
-    paginationContainer.className = "pagination-container d-flex justify-content-center mt-3";
-    const modalFooter = modalElement.querySelector(".modal-footer");
-    modalFooter.insertBefore(paginationContainer, modalFooter.firstChild);
+    paginationContainer.className = "pagination-container";
+    containerFluid.appendChild(paginationContainer);
   } else {
     paginationContainer.innerHTML = '';
   }
@@ -39,42 +73,35 @@ function openImagePicker(modalId, inputId, previewContainerId) {
 }
 
 function loadImages(imageGrid, inputElement, modalElement, previewContainerId, paginationContainer) {
-  // Mostrar un indicador de carga
+  // Mostrar un indicador de carga con clase mejorada
   const loadingDiv = document.createElement("div");
-  loadingDiv.className = "col-12 text-center";
+  loadingDiv.className = "loading-indicator col-12";
   loadingDiv.innerHTML = "<p>Cargando imágenes...</p>";
   imageGrid.innerHTML = '';
   imageGrid.appendChild(loadingDiv);
 
   // Usar la ruta pública en lugar de la protegida
   const url = nextCursor ? `/api/images?cursor=${nextCursor}` : "/api/images";
-  console.log("Fetching images from:", url);
-
+  
   // Obtener el token de la cookie
   const token = getCookie('token');
-  console.log("Token encontrado:", token ? "Sí" : "No");
   
   const headers = {};
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
   
-  console.log("Headers:", headers);
-  
   fetch(url, {
     headers: headers,
     credentials: 'include' // Incluir cookies en la solicitud
   })
     .then((response) => {
-      console.log("Status de respuesta:", response.status);
       if (!response.ok) {
         throw new Error(`Error HTTP: ${response.status}`);
       }
       return response.json();
     })
     .then((data) => {
-      console.log("Received data:", data);
-      
       // Eliminar el indicador de carga
       imageGrid.removeChild(loadingDiv);
       
@@ -87,13 +114,16 @@ function loadImages(imageGrid, inputElement, modalElement, previewContainerId, p
       }
 
       const images = data.images;
-      console.log("Número de imágenes recibidas:", images.length);
       
       // Calcular el número total de páginas (aproximado)
       totalPages = Math.ceil(images.length / imagesPerPage);
       if (data.nextCursor) {
         totalPages += 1; // Añadir al menos una página más si hay más imágenes
       }
+      
+      // Crear un contenedor de fila para las imágenes
+      const row = document.createElement("div");
+      row.className = "row";
       
       images.forEach((image) => {
         const img = document.createElement("img");
@@ -102,10 +132,17 @@ function loadImages(imageGrid, inputElement, modalElement, previewContainerId, p
         img.className = "img-thumbnail w-100";
         img.style.height = "120px"; // Altura fija para todas las imágenes
         img.style.objectFit = "cover"; // Mantener proporción y recortar si es necesario
+        
+        // Mejorar la experiencia al hacer clic
         img.onclick = function () {
+          // Añadir clase seleccionada a la imagen
+          const selectedImages = imageGrid.querySelectorAll(".selected-image");
+          selectedImages.forEach(img => img.classList.remove("selected-image"));
+          img.classList.add("selected-image");
+          
+          // Establecer el valor en el input
           inputElement.value = image.url;
-          modalElement.style.display = "none";
-    
+          
           // Código para la vista previa
           if (previewContainerId) {
             const previewContainer = document.getElementById(previewContainerId);
@@ -113,18 +150,29 @@ function loadImages(imageGrid, inputElement, modalElement, previewContainerId, p
               const previewImage = document.createElement("img");
               previewImage.src = image.url;
               previewImage.alt = "Vista previa";
-              previewImage.style.maxWidth = "100px";
               previewContainer.innerHTML = "";
               previewContainer.appendChild(previewImage);
             }
           }
+          
+          // Cerrar el modal después de un breve retraso
+          setTimeout(() => {
+            if (typeof bootstrap !== 'undefined') {
+              const modal = bootstrap.Modal.getInstance(modalElement);
+              if (modal) modal.hide();
+            } else {
+              modalElement.style.display = "none";
+            }
+          }, 300);
         };
+        
         const col = document.createElement("div");
         col.className = "col-3 mb-3"; // Añadir margen inferior
         col.appendChild(img);
-        imageGrid.appendChild(col);
+        row.appendChild(col);
       });
-
+      
+      imageGrid.appendChild(row);
       nextCursor = data.nextCursor;
       
       // Actualizar la paginación
@@ -162,12 +210,12 @@ function updatePagination(paginationContainer, imageGrid, inputElement, modalEle
   prevLink.className = "page-link";
   prevLink.href = "#";
   prevLink.textContent = "Anterior";
+  prevLink.setAttribute("aria-label", "Anterior");
   prevLink.onclick = function(e) {
     e.preventDefault();
     if (currentPage > 1) {
       currentPage--;
-      // Aquí necesitaríamos implementar la lógica para ir a la página anterior
-      // Por ahora, simplemente recargamos la primera página
+      // Volver a la primera página
       nextCursor = null;
       loadImages(imageGrid, inputElement, modalElement, previewContainerId, paginationContainer);
     }
@@ -180,7 +228,52 @@ function updatePagination(paginationContainer, imageGrid, inputElement, modalEle
   const startPage = Math.max(1, currentPage - 2);
   const endPage = Math.min(totalPages, currentPage + 2);
   
-  for (let i = startPage; i <= endPage; i++) {
+  // Asegurar que se muestren al menos 5 páginas si es posible
+  const minPagesToShow = 5;
+  let adjustedStartPage = startPage;
+  let adjustedEndPage = endPage;
+  
+  if (endPage - startPage + 1 < minPagesToShow) {
+    const pagesShowing = endPage - startPage + 1;
+    const pagesToAdd = minPagesToShow - pagesShowing;
+    
+    if (startPage > 1) {
+      adjustedStartPage = Math.max(1, startPage - pagesToAdd);
+    } else if (endPage < totalPages) {
+      adjustedEndPage = Math.min(totalPages, endPage + pagesToAdd);
+    }
+  }
+  
+  // Añadir primera página y elipsis si es necesario
+  if (adjustedStartPage > 1) {
+    const firstPageLi = document.createElement("li");
+    firstPageLi.className = "page-item";
+    const firstPageLink = document.createElement("a");
+    firstPageLink.className = "page-link";
+    firstPageLink.href = "#";
+    firstPageLink.textContent = "1";
+    firstPageLink.onclick = function(e) {
+      e.preventDefault();
+      currentPage = 1;
+      nextCursor = null;
+      loadImages(imageGrid, inputElement, modalElement, previewContainerId, paginationContainer);
+    };
+    firstPageLi.appendChild(firstPageLink);
+    ul.appendChild(firstPageLi);
+    
+    if (adjustedStartPage > 2) {
+      const ellipsisLi = document.createElement("li");
+      ellipsisLi.className = "page-item disabled";
+      const ellipsisSpan = document.createElement("span");
+      ellipsisSpan.className = "page-link";
+      ellipsisSpan.textContent = "...";
+      ellipsisLi.appendChild(ellipsisSpan);
+      ul.appendChild(ellipsisLi);
+    }
+  }
+  
+  // Páginas numeradas
+  for (let i = adjustedStartPage; i <= adjustedEndPage; i++) {
     const pageLi = document.createElement("li");
     pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
     const pageLink = document.createElement("a");
@@ -191,8 +284,7 @@ function updatePagination(paginationContainer, imageGrid, inputElement, modalEle
       e.preventDefault();
       if (i !== currentPage) {
         currentPage = i;
-        // Aquí necesitaríamos implementar la lógica para ir a la página específica
-        // Por ahora, si es una página posterior, cargamos más imágenes
+        // Si es una página posterior, cargamos más imágenes
         if (i > 1 && nextCursor) {
           loadImages(imageGrid, inputElement, modalElement, previewContainerId, paginationContainer);
         } else {
@@ -205,6 +297,35 @@ function updatePagination(paginationContainer, imageGrid, inputElement, modalEle
     ul.appendChild(pageLi);
   }
   
+  // Añadir última página y elipsis si es necesario
+  if (adjustedEndPage < totalPages) {
+    if (adjustedEndPage < totalPages - 1) {
+      const ellipsisLi = document.createElement("li");
+      ellipsisLi.className = "page-item disabled";
+      const ellipsisSpan = document.createElement("span");
+      ellipsisSpan.className = "page-link";
+      ellipsisSpan.textContent = "...";
+      ellipsisLi.appendChild(ellipsisSpan);
+      ul.appendChild(ellipsisLi);
+    }
+    
+    const lastPageLi = document.createElement("li");
+    lastPageLi.className = "page-item";
+    const lastPageLink = document.createElement("a");
+    lastPageLink.className = "page-link";
+    lastPageLink.href = "#";
+    lastPageLink.textContent = totalPages;
+    lastPageLink.onclick = function(e) {
+      e.preventDefault();
+      currentPage = totalPages;
+      // Aquí necesitaríamos implementar la lógica para ir a la última página
+      // Por ahora, simplemente cargamos más imágenes
+      loadImages(imageGrid, inputElement, modalElement, previewContainerId, paginationContainer);
+    };
+    lastPageLi.appendChild(lastPageLink);
+    ul.appendChild(lastPageLi);
+  }
+  
   // Botón siguiente
   const nextLi = document.createElement("li");
   nextLi.className = `page-item ${!nextCursor ? 'disabled' : ''}`;
@@ -212,6 +333,7 @@ function updatePagination(paginationContainer, imageGrid, inputElement, modalEle
   nextLink.className = "page-link";
   nextLink.href = "#";
   nextLink.textContent = "Siguiente";
+  nextLink.setAttribute("aria-label", "Siguiente");
   nextLink.onclick = function(e) {
     e.preventDefault();
     if (nextCursor) {
@@ -224,12 +346,6 @@ function updatePagination(paginationContainer, imageGrid, inputElement, modalEle
   
   nav.appendChild(ul);
   paginationContainer.appendChild(nav);
-  
-  // Ocultar el botón "Cargar más" ya que ahora usamos paginación
-  const loadMoreButton = modalElement.querySelector("#load-more-btn");
-  if (loadMoreButton) {
-    loadMoreButton.style.display = "none";
-  }
 }
 
 // Función auxiliar para obtener cookies

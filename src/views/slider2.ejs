@@ -32,37 +32,23 @@
         />
         <!-- MODAL CREATE AGREGAR IMAGENES-->
 
-        <div id="modalCreate" class="modal">
+        <div id="modalCreate" class="modal fade" tabindex="-1" aria-hidden="true">
           <div class="modal-dialog modal-xl text-dark modal-images">
             <div class="modal-content">
               <div class="modal-header">
                 <h2>Seleccionar imagen</h2>
+                <button type="button" class="btn-close cancelar-galeria-create" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
                 <div class="container-fluid">
-                  <div
-                    class="row image-grid"
-                    style="overflow-y: auto; max-height: calc(100vh - 200px)"
-                  >
+                  <div class="row image-grid">
                     <!-- Las imágenes se agregarán aquí -->
                   </div>
+                  <!-- La paginación se insertará aquí -->
                 </div>
               </div>
               <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  id="load-more-btn"
-                >
-                  Cargar mas..
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-secondary cancelar-galeria-create"
-                  data-bs-dismiss="modal"
-                >
-                  Cancelar
-                </button>
+                <!-- Eliminamos el botón de cargar más -->
               </div>
             </div>
           </div>
@@ -209,37 +195,23 @@
           <input type="hidden" id="slider2Id" name="id" />
         </form>
         <!-- Modal para seleccionar imágenes -->
-        <div id="modalSelectImage" class="modal">
+        <div id="modalSelectImage" class="modal fade" tabindex="-1" aria-hidden="true">
           <div class="modal-dialog modal-xl text-dark modal-images">
             <div class="modal-content">
               <div class="modal-header">
                 <h2>Seleccionar imagen</h2>
+                <button type="button" class="btn-close cancelar-galeria-create" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
                 <div class="container-fluid">
-                  <div
-                    class="row image-grid"
-                    style="overflow-y: auto; max-height: calc(100vh - 200px)"
-                  >
+                  <div class="row image-grid">
                     <!-- Las imágenes se agregarán aquí -->
                   </div>
+                  <!-- La paginación se insertará aquí -->
                 </div>
               </div>
               <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  id="load-more-btn"
-                >
-                  Cargar mas..
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-secondary cancelar-galeria-create"
-                  data-bs-dismiss="modal"
-                >
-                  Cancelar
-                </button>
+                <!-- Eliminamos el botón de cargar más -->
               </div>
             </div>
           </div>
